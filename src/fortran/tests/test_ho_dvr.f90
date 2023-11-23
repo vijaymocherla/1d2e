@@ -11,7 +11,7 @@ program main
     real(dp), allocatable, dimension(:,:) :: T
     real(dp), allocatable, dimension(:,:) :: V
     real(dp), allocatable, dimension(:)   :: x
-    real(dp), allocatable, dimension(:)   :: psi, psi0
+    real(dp), allocatable, dimension(:)   :: psi0
     real(dp), allocatable, dimension(:)   :: evals
     real(dp), allocatable, dimension(:,:) :: evecs
     
@@ -34,7 +34,7 @@ program main
     dx = 2*x0/n
     m = 1.0d0
     allocate(T(n,n), V(n,n), H(n,n))
-    allocate(x(n), psi(n), psi0(n))
+    allocate(x(n), psi0(n))
     H = 0.0d0
     T = 0.0d0
     V = 0.0d0
@@ -74,13 +74,12 @@ program main
 
 
     psi0 = 0.0d0
-    dt  = 0.0001d0
-    psi0 = evecs(:,1)
-    ! call random_number(psi)
-    ! call dmul_ddot(psi, psi, norm)
-    ! psi = 1/(norm)**(0.5d0) * psi
+    dt  = 0.01d0
+    call random_number(psi0)
+    call dmul_ddot(psi0, psi0, norm)
+    psi0 = 1/(norm)**(0.5d0) * psi0
 
-    call imagtp(H, psi0, dt, 50)
+    call imagtp(H, psi0, dt, 200)
 
 
 end program main

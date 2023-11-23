@@ -15,7 +15,7 @@ module integrators
         complex(dp), intent(in) :: y0(:)
         real(dp), intent(in) :: ti, tf, dt
         integer, intent(in) :: print_nstep
-        character (len=32), intent(in) :: outfile
+        character (len=*), intent(in) :: outfile
        
         complex(dp), allocatable :: yi(:)
         complex(dp), allocatable, dimension(:) :: k1, k2, k3, k4 
@@ -48,10 +48,9 @@ module integrators
         ! expectation values
         call zmul_mv(func, yi, kt)
         call zmul_zdotc(yi,kt, expt)
-        print*, expt
         ! autocorr
         call zmul_zdotc(y0, yi, autocorr)
-        write(100,*) t, abs(norm), abs(autocorr), abs(expt)  
+        write(100,'(4f32.16)') t, abs(norm), abs(autocorr), abs(expt)  
 
         do while (t < tf)
             call zmul_mv(func, yi, k1)
@@ -72,7 +71,7 @@ module integrators
                 call zmul_zdotc(yi,kt, expt)
                 ! autocorr
                 call zmul_zdotc(y0, yi, autocorr)
-                write(100,*) t, abs(norm), abs(autocorr), abs(expt)  
+                write(100,'(4f32.16)') t, abs(norm), abs(autocorr), abs(expt)  
             end if
         end do
         close(100)
@@ -94,22 +93,17 @@ module integrators
         real(dp)  :: tf  ! final time
         integer :: n
     
-        real(dp), parameter :: fs_to_au = 41.341374575751
         n = size(H, dim=1)
         allocate(y0(n), y(n))
         allocate(func(n,n))
         ! converting fs to au
-        ti = ti*fs_to_au
-        tf = tf*fs_to_au
-        dt = dt*fs_to_au
-
         ti = 0.0d0
         tf = nstep*dt
 
         ! real time prop
         ! func = cmplx(0.00d0, -H, dp)
         ! imaginary time prop 
-        func = H
+        func = cmplx(-H, 0.0d0)
         y0 = cmplx(psi, 0.0d0, dp)
 
         

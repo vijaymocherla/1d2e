@@ -24,9 +24,9 @@ module helpers
         m = size(A,dim=1)
         n = size(A,dim=2)
         alpha = (1.0d0, 0.0d0)
-        beta = (1.0d0, 0.0d0)
+        beta = (0.0d0, 0.0d0)
         transa = 'N'
-        call zgemv(transa, m, n, alpha, A, lda, X, incx, alpha, Y, incy)
+        call zgemv(transa, m, n, alpha, A, lda, X, incx, beta, Y, incy)
     end subroutine  
 
     ! wrapper for ZGEMM
@@ -37,7 +37,7 @@ module helpers
         character :: transa, transb, transc
         complex(dp) :: alpha, beta 
         alpha=(1.0d0, 0.0d0)
-        beta=(1.0d0, 0.0d0)
+        beta=(0.0d0, 0.0d0)
         transa = 'N'
         transb = 'N'
         transc = 'N'
@@ -89,7 +89,7 @@ module helpers
         m = size(A,dim=1)
         n = size(x,dim=1)
         alpha = 1.0d0
-        beta = 1.0d0
+        beta = 0.0d0
         transa = 'N'
         call dgemv(transa, m, n, alpha, A, lda, X, incx, beta, Y, incy)
     end subroutine  
@@ -102,7 +102,7 @@ module helpers
         character :: transa, transb, transc
         real(dp) :: alpha, beta 
         alpha = 1.0d0
-        beta = 1.0d0
+        beta = 0.0d0
         transa = 'N'
         transb = 'N'
         transc = 'N'
