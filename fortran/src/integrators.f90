@@ -78,36 +78,65 @@ module integrators
     end subroutine rungekutta
 
     ! subroutine for imaginary time propagation
-    subroutine imagtp(H, psi, dt, nstep)
+    subroutine imagtp(H, psi0, dt, print_nstep, etol)
         use, intrinsic :: iso_fortran_env, only:dp=>real64
         use blas_wrappers
         implicit none
-        real(dp), allocatable, intent(in) :: H(:,:)
-        real(dp), allocatable, intent(inout) :: psi(:)
-        integer, intent(in) :: nstep
-        real(dp), intent(inout) :: dt
-        complex(dp), allocatable :: func(:,:)
-        complex(dp), allocatable :: y0(:), y(:)
-        complex(dp) :: expt
-        real(dp)  :: ti  ! initial time
-        real(dp)  :: tf  ! final time
+        real(dp), dimension(:,:), intent(in) :: H
+        real(dp), dimension(:), intent(inout) :: psi0
+        integer, intent(in) :: print_nstep
+        real(dp), intent(in) :: dt
+        real(dp), intent(in) :: etol
+        real(dp)  :: t  ! time
         integer :: n
+        integer :: tstep
+        real(dp), allocatable :: psi_i(:)
+        real(dp), allocatable, dimension(:) :: k1, k2, k3, k4 
+        real(dp), allocatable, dimension(:) :: kt
+        real(dp) :: norm, autocorr, E0, Ei, dE
     
         n = size(H, dim=1)
-        allocate(y0(n), y(n))
-        allocate(func(n,n))
+        allocate(k1(n), k2(n), k3(n), k4(n))
+        allocate(kt(n))
+        allocate(psi_i(n))
         ! converting fs to au
-        ti = 0.0d0
-        tf = nstep*dt
+        t = 0.0d0
+        tstep = 0
+        psi_i = psi0
+        E0 = 0.0d0
+        Ei = 0.0d0
+        call dmul_mv(H, psi_i, kt)
+        call dmul_ddot(kt, psi_i, E0)
+        open(100, file='itp.out')
+        do 
+            call dmul_mv(-H, psi_i, k1)
+            call dmul_mv(-H, (psi_i + (dt*0.5d0)*k1), k2)
+            call dmul_mv(-H, (psi_i + (dt*0.5d0)*k2), k3)
+            call dmul_mv(-H, (psi_i + (dt*1.0d0)*k3), k4)
+            psi_i = psi_i + (dt/6.0d0)*(k1 + 2.0d0*k2 + 2.0d0*k3 + k4)
+            t = t + dt
+            tstep = tstep + 1
+            if (modulo(tstep, print_nstep) == 0) then
+                ! norm
+                call dmul_ddot(psi_i, psi_i, norm)
+                ! intermediate normalisation only for itp
+                psi_i = 1/(norm)**(0.5d0) * psi_i
+                call dmul_ddot(psi_i, psi_i, norm)
+                ! autocorr
+                call dmul_ddot(psi0, psi_i, autocorr)
+                ! calculating energy
+                call dmul_mv(H, psi_i, kt)
+                call dmul_ddot(kt, psi_i, Ei)
+                dE = abs(E0 - Ei)
+                E0 = Ei
+                write(100,'(4f32.16)') t, norm, autocorr, Ei 
+                if (dE < etol) then
+                    exit
+                end if
+            end if
+        end do
+        close(100)
 
-        ! real time prop
-        ! func = cmplx(0.00d0, -H, dp)
-        ! imaginary time prop 
-        func = cmplx(-H, 0.0d0)
-        y0 = cmplx(psi, 0.0d0, dp)
-
-        
-        call rungekutta(func, y0, ti, tf, dt, print_nstep=1, outfile='itp.out')
     end subroutine
 
 end module integrators

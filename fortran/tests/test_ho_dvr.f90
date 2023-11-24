@@ -80,7 +80,7 @@ program main
     call dmul_ddot(psi0, psi0, norm)
     psi0 = 1/(norm)**(0.5d0) * psi0
 
-    call imagtp(H, psi0, dt, 200)
+    call imagtp(H, psi0, dt, 200, 0.000001d0)
 
 
 end program main
