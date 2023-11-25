@@ -8,19 +8,19 @@ module blas_wrappers
     contains
 
     ! wrapper for ZGEMV
-    subroutine zmul_mv(A, X, Y)
+    subroutine zmul_mv(A, X, Y, alpha)
+        complex(dp), intent(in) :: alpha
         complex(dp), dimension(:,:), intent(in) :: A
-        complex(dp), dimension(:), intent(in) :: X
-        complex(dp), dimension(:), intent(out) :: Y
+        complex(dp), dimension(:), intent(in)   :: X
+        complex(dp), dimension(:), intent(out)  :: Y
         integer :: m, n, incx, incy, lda
         character :: transa
-        complex(dp) :: alpha, beta
+        complex(dp) ::  beta
         lda = size(A,1)
         incx = 1
         incy = 1
         m = size(A,dim=1)
         n = size(A,dim=2)
-        alpha = (1.0d0, 0.0d0)
         beta = (0.0d0, 0.0d0)
         transa = 'N'
         call zgemv(transa, m, n, alpha, A, lda, X, incx, beta, Y, incy)
@@ -28,8 +28,8 @@ module blas_wrappers
 
     ! wrapper for ZGEMM
     subroutine zmul_mm(A, B, C)
-        complex(dp), dimension(:, :), intent(in) :: A, B
-        complex(dp), dimension(:, :), intent(out) :: C
+        complex(dp), dimension(:,:), intent(in) :: A, B
+        complex(dp), dimension(:,:), intent(out) :: C
         integer :: l, m, n, lda, ldb, ldc
         character :: transa, transb, transc
         complex(dp) :: alpha, beta 
@@ -72,12 +72,13 @@ module blas_wrappers
     end subroutine      
 
     ! wrapper for DGEMV
-    subroutine dmul_mv(A, X, Y)
+    subroutine dmul_mv(A, X, Y, alpha)
+        real(dp), intent(in) :: alpha
         real(dp), dimension(:,:), intent(in) :: A
-        real(dp), dimension(:), intent(in) :: X
-        real(dp), dimension(:), intent(out) :: Y
+        real(dp), dimension(:),   intent(in) :: X
+        real(dp), dimension(:),  intent(out) :: Y
         integer :: m, n, incx, incy, lda, ndim
-        real(dp) :: alpha, beta
+        real(dp) :: beta
         character :: transa
         ndim = size(A, dim=1)
         lda = size(A,dim=1)        
@@ -85,7 +86,6 @@ module blas_wrappers
         incy = 1
         m = size(A,dim=1)
         n = size(x,dim=1)
-        alpha = 1.0d0
         beta = 0.0d0
         transa = 'N'
         call dgemv(transa, m, n, alpha, A, lda, X, incx, beta, Y, incy)
@@ -93,8 +93,8 @@ module blas_wrappers
 
     ! wrapper for DGEMM
     subroutine dmul_mm(A, B, C)
-        real(dp), dimension(:, :), intent(in) :: A, B
-        real(dp), dimension(:, :), intent(out) :: C
+        real(dp), dimension(:,:), intent(in)  :: A, B
+        real(dp), dimension(:,:), intent(out) :: C
         integer :: l, m, n, lda, ldb, ldc, ndim
         character :: transa, transb, transc
         real(dp) :: alpha, beta 
@@ -115,7 +115,7 @@ module blas_wrappers
 
     ! wrapper for DDOT
     subroutine dmul_ddot(X, Y, res)
-        real(dp), dimension(:), intent(in) :: X, Y 
+        real(dp), allocatable, dimension(:), intent(in) :: X, Y 
         real(dp), intent(out) :: res
         real(dp), external :: ddot
         integer :: incx, incy, ndim

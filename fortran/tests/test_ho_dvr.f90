@@ -6,7 +6,7 @@ program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use blas_wrappers, only: dmul_ddot, dmul_mv
     use lapack_wrappers, only: eigsh
-    use integrators, only: rungekutta, imagtp
+    use rungekutta, only: real_tprop, imag_tprop
     implicit none
     real(dp), allocatable, dimension(:,:) :: H
     real(dp), allocatable, dimension(:,:) :: T
@@ -22,7 +22,8 @@ program main
     integer   :: n   ! number of grid points 
     real(dp)  :: dx  ! grid spacing 
     real(dp)  :: m   ! mass of the electron
-    real(dp)  :: dt
+    real(dp)  :: dt  ! time step for propagation
+    real(dp)  :: w   ! oscillator frequency 
     
 
     integer   :: i,j
@@ -31,19 +32,31 @@ program main
 
 
     x0 = 10.0d0
-    n = 100
+    n = 2000
     dx = 2*x0/n
     m = 1.0d0
+    w = 1.0d0
     allocate(T(n,n), V(n,n), H(n,n))
     allocate(x(n), psi0(n))
     H = 0.0d0
     T = 0.0d0
     V = 0.0d0
+    print*, ""
+    print*, "Harmonic Oscillator DVR"
+    print*, "------------------------"
+    print('(a,f16.8)'), "x0 = ", x0
+    print('(a,i16)'),   "n  = ", n
+    print('(a,f16.8)'), "dx = ", dx
+    print('(a,f16.8)'), "w  = ", w
+    print*,''
     
+    ! Position grid points
     do i=1,n
         x(i) = -x0 + (i-1)*dx
     end do
 
+    print*, "Generating Hamiltonian Matrix......"
+    print*,'' 
     ! Kinetic operator
     do i = 1, n
         T(i,i) = (-1)**(i-i) * (1.0d0 / (2.0d0 * m * dx**2)) * pi_dp**2 / 3.0d0
@@ -61,26 +74,29 @@ program main
     H = T + V
     deallocate(T,V)
     
+    ! print*, "Diagonalising the Hamiltonian......"
+    ! print*, "" 
+    ! ! digonalising
+    ! allocate(evals(n), evecs(n,n))
+    ! call eigsh(H, evals, evecs)
+    ! ! writing evals to .txt file
+    ! open(100,file='evals.txt')
+    !     do i=1,n
+    !         write(100,*) i, evals(i)
+    !     end do
+    ! close(100)
 
-    ! digonalising
-    allocate(evals(n), evecs(n,n))
-    call eigsh(H, evals, evecs)
-
-
-    open(100,file='evals.txt')
-        do i=1,n
-            write(100,*) i, evals(i)
-        end do
-    close(100)
-
-
+    print*, "Using Imaginary time propagation to get ground state......"
     psi0 = 0.0d0
-    dt  = 0.01d0
+    dt  = 0.1d0/n
     call random_number(psi0)
+    ! do i=1,n 
+    !     psi0(i) = exp(-0.5*x(i)**2) 
+    ! end do
     call dmul_ddot(psi0, psi0, norm)
     psi0 = 1/(norm)**(0.5d0) * psi0
 
-    call imagtp(H, psi0, dt, 200, 0.000001d0)
+    call imag_tprop(H, psi0, dt, 100, 0.000001d0)
 
 
 end program main
