@@ -12,16 +12,17 @@ program main
     real(dp) :: norm, etol, Ei
 
     ! setting parameters for grids
-    m = 1.0d0                    ! mass of the electron
-    n = 128                      ! size of 1e- grids
-    ndim = n**2                  ! size of 2e- direct product space
-    x0 = 10.0                     ! extent of 1d box
-    dx = 2.0d0*x0 / real(n,8)    ! grid-spacing
-    alpha = 0.01d0               ! 1e- soft coulomb parameter
-    beta  = 0.01d0               ! e- correlation parameter
-    multi_well_switch = .false.  ! default for single well
-    te_swtich = .true.           ! switch to test one-electron hamiltonian 
+    m = 1.0d0                   ! mass of the electron
+    n = 1000                     ! size of 1e- grids
+    ndim = n                    ! size of 2e- direct product space
+    x0 = 10.0                   ! extent of 1d box
+    dx = 2.0d0*x0 / real(n,8)   ! grid-spacing
+    alpha = 0.01d0              ! 1e- soft coulomb parameter
+    beta = 0.01d0               ! e- correlation parameter
+    multi_well_switch = .false. ! default for single well
+    te_swtich = .false.         ! switch to test one-electron hamiltonian 
     etol = 0.00000001            ! energy absolute tolerance 
+
     print*, ""
     print*, "    Two-electron DVR    "
     print*, "------------------------"
@@ -51,9 +52,9 @@ program main
     print*, "Generating Hamiltonian Matrix......"
     print*, "" 
     do i=1,ndim
-        hamiltonian(i,i) = te_sw_hamiltonian(i,i)
+        hamiltonian(i,i) = oe_ho_hamiltonian(i,i)
         do j=i+1,ndim
-            hamiltonian(i,j) = te_sw_hamiltonian(i,j)
+            hamiltonian(i,j) = oe_ho_hamiltonian(i,j)
             hamiltonian(j,i) = hamiltonian(i,j)
         end do
     end do
@@ -77,10 +78,16 @@ program main
     close(100)
 
     
-    print*, "Using Imaginary time propagation (ITP) to get ground state......"
-    dt  = 0.00001d0
+    print*, "Using Imaginary time propagation to get ground state......"
+    dt  = 0.0001d0
 
-    call gen_trial_state(psi0)   
+    !call gen_trial_state(psi0)    
+    do i=1,n
+        psi0(i) = exp(-x(i)**2)
+    end do
+
+    call normalize(psi0)
+
     call imag_tprop(psi0, dt, 100, etol, Ei, tstep)
     print*, ""
     print*, "Completed Imaginary time propagation (ITP)."
