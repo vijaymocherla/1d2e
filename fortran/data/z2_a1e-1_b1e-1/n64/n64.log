@@ -1,0 +1,31 @@
+nohup: ignoring input
+ 
+     Two-electron DVR    
+ ------------------------
+x0     =      10.00000000
+n      =               64
+ndim   =             4096
+dx     =       0.31746032
+ 
+Soft-Coulomb Parameters:
+alpha  =       0.10000000
+beta   =       0.10000000
+ 
+ Generating Hamiltonian Matrix......
+ 
+ Diagonalising the Hamiltonian......
+ 
+ Completed Diagonalisation!
+ Ground state Energy:   -5.85790688920772     
+ 
+ Using Imaginary time propagation (ITP) to get ground state......
+ 
+ Completed Imaginary time propagation (ITP).
+ 
+ ITP Summary:
+ ------------
+ dt      =   1.000000000000000E-002
+ nstep   =          407
+ E_conv  =   9.999999717180685E-010
+ Ei      =   -5.85790686281743     
+ 

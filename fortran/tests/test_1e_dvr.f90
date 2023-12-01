@@ -10,13 +10,14 @@ program main
     integer :: i,j, tstep
     real(dp) :: dt
     real(dp) :: norm, etol, Ei
+    
 
     ! setting parameters for grids
     m = 1.0d0                   ! mass of the electron
     n = 1000                     ! size of 1e- grids
     ndim = n                    ! size of 2e- direct product space
     x0 = 10.0                   ! extent of 1d box
-    dx = 2.0d0*x0 / real(n,8)   ! grid-spacing
+    dx = 2.0d0*x0 / real(n-1,8)   ! grid-spacing
     alpha = 0.01d0              ! 1e- soft coulomb parameter
     beta = 0.01d0               ! e- correlation parameter
     multi_well_switch = .false. ! default for single well
@@ -24,8 +25,8 @@ program main
     etol = 0.00000001            ! energy absolute tolerance 
 
     print*, ""
-    print*, "    Two-electron DVR    "
-    print*, "------------------------"
+    print*, "   Harmonic Oscillator DVR   "
+    print*, "-----------------------------"
     print('(a,f16.8)'), "x0     = ", x0
     print('(a,i16)'),   "n      = ", n
     print('(a,i16)'),   "ndim   = ", ndim

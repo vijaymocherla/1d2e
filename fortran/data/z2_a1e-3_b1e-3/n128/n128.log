@@ -1,0 +1,19 @@
+nohup: ignoring input
+ 
+     Two-electron DVR    
+ ------------------------
+x0     =      10.00000000
+m      =       1.00000000
+Z      =       2.00000000
+n      =              128
+ndim   =            16384
+dx     =       0.15748031
+ 
+Soft-Coulomb Parameters:
+alpha  =       0.00100000
+beta   =       0.00100000
+ 
+ Generating Hamiltonian Matrix......
+ 
+ Diagonalising the Hamiltonian......
+ 

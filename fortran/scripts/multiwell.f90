@@ -1,0 +1,142 @@
+program main
+    use two_electron_dvr
+    use, intrinsic :: iso_fortran_env, only:dp=>real64
+    use lapack_wrappers, only:eigsh
+    use blas_wrappers
+    implicit none
+    real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
+    real(dp), allocatable :: evals(:)
+    real(dp), allocatable :: psi(:)
+    real(dp), allocatable :: psi0(:)
+    integer :: i,j, tstep, print_nstep
+    real(dp) :: dt
+    real(dp) :: norm, etol, Ei
+    integer :: ci
+    character (len=32) :: arg
+    
+    ci = 1
+    ! Reading input parameters
+    n = 32                       ! size of 1e- grids
+    x0 = 10.0d0                  ! extent of 1d box
+    alpha = 1.00d0               ! 1e- soft coulomb parameter
+    beta  = 1.00d0               ! e- correlation parameter
+    etol = 0.000000001           ! energy absolute tolerance 
+    dt  = 0.001d0
+    print_nstep = 100
+    do 
+        call get_command_argument(ci, arg)
+        if (trim(arg)=="-n") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(i32)') n
+            ci = ci + 2
+        else if (trim(arg)=="-alpha") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') alpha
+            ci = ci + 2
+        else if (trim(arg)=="-beta") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') beta
+            ci = ci + 2
+        else if (trim(arg)=="-dt") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') dt
+            ci = ci + 2    
+        else if (trim(arg)=="-print_nstep") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(i32)') print_nstep
+            ci = ci + 2
+        else
+            exit
+        end if        
+    end do
+    
+    ! setting parameters for grids and calculations
+    z = 2.0d0
+    m = 1.0d0                    ! mass of the electron
+    ndim = n**2                  ! size of 2e- direct product space
+    dx = 2.0d0*x0 / real(n-1,8)  ! grid-spacing
+    multi_well_switch = .true.   ! default for single well
+    te_swtich = .true.           ! switch to test one-electron hamiltonian 
+    allocate(atom_pos(2))
+    allocate(atom_num(2))
+    ! H2 bond distance
+    atom_pos = (/ -0.700378d0, 0.700378d0/)
+    atom_num = (/ 1.0d0, 1.0d0/)
+    
+    print*, ""
+    print*, "    Two-electron DVR    "
+    print*, "------------------------"
+    print('(a,f16.8)'), "x0     = ", x0
+    print('(a,f16.8)'), "m      = ", m
+    print('(a,f16.8)'), "Z      = ", z
+    print('(a,i16)'),   "n      = ", n
+    print('(a,i16)'),   "ndim   = ", ndim
+    print('(a,f16.8)'), "dx     = ", dx
+    print*, "" 
+    print('(a)'), "Soft-Coulomb Parameters:"
+    print('(a,f16.8)'), "alpha  = ", alpha
+    print('(a,f16.8)'), "beta   = ", beta
+    print*, "" 
+    ! Position grid points
+    allocate(x(n))
+    do i=1,n
+        x(i) = -x0 + (i-1)*dx
+    end do
+    
+
+   ! Allocating arrays
+   allocate(hamiltonian(ndim, ndim))
+   allocate(evals(ndim))
+   allocate(evecs(ndim, ndim))
+   allocate(psi(ndim))
+   allocate(psi0(ndim))
+
+   hamiltonian = 0.0d0
+   print*, "Generating Hamiltonian Matrix......"
+   print*, "" 
+   do i=1,ndim
+       hamiltonian(i,i) = te_mw_hamiltonian(i,i)
+       do j=i+1,ndim
+           hamiltonian(i,j) = te_mw_hamiltonian(i,j)
+           hamiltonian(j,i) = hamiltonian(i,j)
+       end do
+   end do
+   
+   print*, "Diagonalising the Hamiltonian......"
+   print*, "" 
+   ! diagonalising hamiltonian
+   call eigsh(hamiltonian, evals, evecs)
+   print*, "Completed Diagonalisation!"
+   print*, "Ground state Energy: ", evals(1)
+   print*,""
+   open(100, file='evals.txt')
+   do i=1,ndim
+       write(100,*) evals(i)
+   end do
+   close(100)
+   open(100, file='evec01.txt')
+   do i=1,ndim
+       write(100,*) evecs(i,1)
+   end do
+
+    
+    print*, "Using Imaginary time propagation (ITP) to get ground state......"
+
+    call gen_trial_state(psi0)   
+    call imag_tprop(psi0, dt, print_nstep, etol, Ei, tstep)
+    open(100, file='psi_itp.out')
+    do i=1,ndim
+        write(100,*) psi0(i)
+    end do
+    close(100)
+    print*, ""
+    print*, "Completed Imaginary time propagation (ITP)."
+    print*, ""
+    print*, "ITP Summary:"
+    print*, "------------"
+    print*, "dt      = ", dt
+    print*, "nstep   = ", tstep
+    print*, "E_conv  = ", etol
+    print*, "Ei      = ", Ei
+    print*, ""
+end program main
