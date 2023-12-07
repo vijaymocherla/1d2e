@@ -17,3 +17,17 @@ beta   =       0.00100000
  
  Diagonalising the Hamiltonian......
  
+ Completed Diagonalisation!
+ Ground state Energy:   -19.0984685124904     
+ 
+ Using Imaginary time propagation (ITP) to get ground state......
+ 
+ Completed Imaginary time propagation (ITP).
+ 
+ ITP Summary:
+ ------------
+ dt      =   1.000000000000000E-003
+ nstep   =         1723
+ E_conv  =   9.999999717180685E-010
+ Ei      =   -19.0984684064575     
+ 
