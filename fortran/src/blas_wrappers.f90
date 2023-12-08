@@ -4,26 +4,27 @@ module blas_wrappers
     private
 
     public zmul_mv, zmul_mm, zmul_zdotc, &
-           dmul_mv, dmul_mm, dmul_ddot
+           dmul_mv, dmul_mm, dmul_ddot, &
+           csr_zmul_mv, csr_dmul_mv
+    
     contains
 
-    ! wrapper for ZGEMV
+    ! wrapper for ZSYMV
     subroutine zmul_mv(A, X, Y, alpha)
         complex(dp), intent(in) :: alpha
         complex(dp), dimension(:,:), intent(in) :: A
         complex(dp), dimension(:), intent(in)   :: X
         complex(dp), dimension(:), intent(out)  :: Y
-        integer :: m, n, incx, incy, lda
-        character :: transa
+        integer :: n, incx, incy, lda
+        character :: uplo
         complex(dp) ::  beta
         lda = size(A,1)
         incx = 1
         incy = 1
-        m = size(A,dim=1)
         n = size(A,dim=2)
         beta = (0.0d0, 0.0d0)
-        transa = 'N'
-        call zgemv(transa, m, n, alpha, A, lda, X, incx, beta, Y, incy)
+        uplo = 'U'
+        call zsymv(uplo, n, alpha, A, lda, X, incx, beta, Y, incy)
     end subroutine  
 
     ! wrapper for ZGEMM
@@ -71,7 +72,7 @@ module blas_wrappers
         res = zdotc(ndim, x, incx, y, incy)
     end subroutine      
 
-    ! wrapper for DGEMV
+    ! wrapper for DSYMV
     subroutine dmul_mv(A, X, Y, alpha)
         real(dp), intent(in) :: alpha
         real(dp), dimension(:,:), intent(in) :: A
@@ -79,16 +80,15 @@ module blas_wrappers
         real(dp), dimension(:),  intent(out) :: Y
         integer :: m, n, incx, incy, lda, ndim
         real(dp) :: beta
-        character :: transa
+        character :: uplo
         ndim = size(A, dim=1)
         lda = size(A,dim=1)        
         incx = 1
         incy = 1
-        m = size(A,dim=1)
         n = size(x,dim=1)
         beta = 0.0d0
-        transa = 'N'
-        call dgemv(transa, m, n, alpha, A, lda, X, incx, beta, Y, incy)
+        uplo = 'U'
+        call dsymv(uplo, n, alpha, A, lda, X, incx, beta, Y, incy)
     end subroutine  
 
     ! wrapper for DGEMM
@@ -125,5 +125,29 @@ module blas_wrappers
         res = ddot(ndim, x, incx, y, incy)
     end subroutine
 
+    ! wrapper for MKL SPARSE ZSYMV
+    subroutine csr_zmul_mv(A, arow, acol,  X, Y)
+        integer, allocatable, dimension(:), intent(in) :: arow, acol
+        complex(dp), allocatable, dimension(:), intent(in) :: A
+        complex(dp), allocatable, dimension(:), intent(in) :: X, Y
+        character (len=1) :: uplo
+        integer :: m
+        m = size(arow)-1 
+        uplo = 'U'
+        call mkl_csrzsymv(uplo, m, A, arow, acol, X, Y)
+    end subroutine csr_zmul_mv
+    
+    ! wrapper for MKL SPARSE DSYMV
+    subroutine csr_dmul_mv(A, arow, acol, X, Y)
+        implicit none
+        integer, allocatable, dimension(:), intent(in) :: arow, acol
+        real(dp), allocatable, dimension(:), intent(in) :: A
+        real(dp), allocatable, dimension(:), intent(in) :: X, Y
+        integer :: m
+        character (len=1) :: uplo
+        uplo = 'U'
+        m = size(arow) - 1
+        call mkl_csrdsymv(uplo, m, A, arow, acol, X, Y)
+    end subroutine csr_dmul_mv
 
 end module blas_wrappers
