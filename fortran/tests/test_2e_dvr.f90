@@ -1,8 +1,9 @@
 program main
-    use two_electron_dvr
     use, intrinsic :: iso_fortran_env, only:dp=>real64
+    use two_electron_dvr, only: te_sw_hamiltonian
     use lapack_wrappers, only:eigsh
-    use blas_wrappers
+    use itprop
+
     implicit none
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)

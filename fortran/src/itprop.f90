@@ -1,4 +1,4 @@
-module itp
+module itprop
     use, intrinsic ::iso_fortran_env, only:dp=>real64
     use blas_wrappers, only: csr_dmul_mv
     use helpers, only: omp_normalize, omp_daxpy, omp_dotprod
@@ -290,4 +290,4 @@ module itp
         close(100)
     end subroutine sparse_imag_tprop
 
-end module itp
+end module itprop

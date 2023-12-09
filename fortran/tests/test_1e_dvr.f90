@@ -1,8 +1,9 @@
 program main
     use two_electron_dvr
     use, intrinsic :: iso_fortran_env, only:dp=>real64
+    use itprop
+    use rungekutta, only: imag_tprop
     use lapack_wrappers, only:eigsh
-    use blas_wrappers
     implicit none
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)
@@ -83,11 +84,6 @@ program main
     dt  = 0.0001d0
 
     !call gen_trial_state(psi0)    
-    do i=1,n
-        psi0(i) = exp(-x(i)**2)
-    end do
-
-    call normalize(psi0)
 
     call imag_tprop(psi0, dt, 100, etol, Ei, tstep)
     print*, ""

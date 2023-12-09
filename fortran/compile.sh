@@ -13,4 +13,7 @@ cd bin/
 $compiler $source'blas_wrappers.f90' -c $flags
 $compiler $source'lapack_wrappers.f90' -c $flags
 $compiler $source'helpers.f90' -c $flags
-$compiler $source'integrators.f90' -c $flags
+$compiler $source'itprop.f90' -c $flags
+
+$compiler $source'two_electron_dvr.f90' -c $flags
+$compiler $source'rungekutta.f90' -c $flags
