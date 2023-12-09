@@ -1,0 +1,26 @@
+nohup: ignoring input
+ 
+     Two-electron DVR    
+ ------------------------
+x0     =      10.00000000
+m      =       1.00000000
+Z      =       2.00000000
+n      =              256
+ndim   =            65536
+dx     =       0.07843137
+ 
+Soft-Coulomb Parameters:
+alpha  =       0.01000000
+beta   =       0.01000000
+ 
+ Using Imaginary time propagation (ITP) to get ground state......
+ 
+ Completed Imaginary time propagation (ITP).
+ 
+ ITP Summary:
+ ------------
+ dt      =   1.000000000000000E-003
+ nstep   =         1749
+ E_conv  =   9.999999717180685E-010
+ Ei      =   -14.2079187329560     
+ 
