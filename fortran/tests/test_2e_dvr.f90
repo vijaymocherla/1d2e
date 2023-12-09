@@ -1,6 +1,6 @@
 program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
-    use two_electron_dvr, only: te_sw_hamiltonian
+    use two_electron_dvr
     use lapack_wrappers, only:eigsh
     use itprop
 
@@ -9,7 +9,7 @@ program main
     real(dp), allocatable :: evals(:)
     real(dp), allocatable :: psi(:)
     real(dp), allocatable :: psi0(:)
-    integer :: i,j, tstep, print_nstep
+    integer :: i,j, tstep, print_nstep, ndim
     real(dp) :: dt
     real(dp) :: norm, etol, Ei
     integer :: ci

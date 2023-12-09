@@ -1,21 +1,20 @@
 program main
-    use two_electron_dvr
     use, intrinsic :: iso_fortran_env, only:dp=>real64
+    use two_electron_dvr
     use itprop
-    use rungekutta, only: imag_tprop
     use lapack_wrappers, only:eigsh
     implicit none
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)
     real(dp), allocatable :: psi0(:), psi(:)
-    integer :: i,j, tstep
+    integer :: i,j, tstep, ndim
     real(dp) :: dt
     real(dp) :: norm, etol, Ei
     
 
     ! setting parameters for grids
     m = 1.0d0                   ! mass of the electron
-    n = 1000                     ! size of 1e- grids
+    n = 100                     ! size of 1e- grids
     ndim = n                    ! size of 2e- direct product space
     x0 = 10.0                   ! extent of 1d box
     dx = 2.0d0*x0 / real(n-1,8)   ! grid-spacing
@@ -43,7 +42,6 @@ program main
         x(i) = -x0 + (i-1)*dx
     end do
     
-
     ! Allocating arrays
     allocate(hamiltonian(ndim, ndim))
     allocate(evals(ndim))
@@ -83,8 +81,7 @@ program main
     print*, "Using Imaginary time propagation to get ground state......"
     dt  = 0.0001d0
 
-    !call gen_trial_state(psi0)    
-
+    call gen_trial_state(psi0)    
     call imag_tprop(psi0, dt, 100, etol, Ei, tstep)
     print*, ""
     print*, "Completed Imaginary time propagation (ITP)."
