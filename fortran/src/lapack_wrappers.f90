@@ -12,13 +12,14 @@ module lapack_wrappers
         real(dp), dimension(:, :), intent(in) :: A
         real(dp), dimension(:), intent(out) :: vals
         real(dp), dimension(:, :), intent(out) :: vecs
-        integer :: info, ndim
+        integer(dp) :: info, ndim
         real(dp), allocatable :: work(:)
         character, parameter :: jobz="V", uplo="U"
         ndim = size(A, dim=1) 
         allocate(work(3*ndim))
         vecs = A
         call dsyev(jobz, uplo, ndim, vecs, ndim, vals, work, 3*ndim, info)
+        print*, info
     end subroutine eigsh
 
 end module lapack_wrappers
