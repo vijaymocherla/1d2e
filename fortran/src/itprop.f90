@@ -7,7 +7,7 @@ module itprop
     implicit none
     private 
 
-    public :: imag_tprop, sparse_imag_tprop
+    public :: imag_tprop, sparse_imag_tprop, gen_trial_state
 
     contains
     
@@ -30,7 +30,7 @@ module itprop
         !$omp end do
         !$omp end parallel
         ! normalizing trial state
-        call normalize(psi) 
+        call omp_normalize(psi) 
     end subroutine
     
     ! parallelised routine for psi_j = a * hamiltonian * psi_i
@@ -95,7 +95,6 @@ module itprop
         real(dp) :: norm, autocorr, E0, dE
         real(dp) :: a
         integer :: ndim
-
         ! allocating arrays
         ndim = size(psi0)
         a = -1.0d0
@@ -144,11 +143,10 @@ module itprop
             call omp_daxpy(dt/3.0d0, k3, psi_i, kt)
             call omp_daxpy(dt/6.0d0, k4, kt, psi_i)
             ! intermediate normalisation only for itp
-            call normalize(psi_i)
+            call omp_normalize(psi_i)
             ! time step increment
             t = t + dt
             tstep = tstep + 1
-            
             ! calculating energy (Ei)
             call omp_minus_ham_psi(a, psi_i, kt) ! omp_minus_ham_psi gives -(\hat{H}.\psi)
             call omp_dotprod(kt, psi_i, Ei)   ! Ei = <\psi|-\hat{H}|\psi>
@@ -255,7 +253,7 @@ module itprop
             call omp_daxpy(dt/3.0d0, k3, psi_i, kt)
             call omp_daxpy(dt/6.0d0, k4, kt, psi_i)
             ! intermediate normalisation only for itp
-            call normalize(psi_i)
+            call omp_normalize(psi_i)
             ! time step increment
             t = t + dt
             tstep = tstep + 1

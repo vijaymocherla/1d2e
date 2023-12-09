@@ -134,7 +134,7 @@ module blas_wrappers
         integer :: m
         m = size(arow)-1 
         uplo = 'U'
-        call mkl_csrzsymv(uplo, m, A, arow, acol, X, Y)
+        call mkl_zcsrsymv(uplo, m, A, arow, acol, X, Y)
     end subroutine csr_zmul_mv
     
     ! wrapper for MKL SPARSE DSYMV
@@ -147,7 +147,7 @@ module blas_wrappers
         character (len=1) :: uplo
         uplo = 'U'
         m = size(arow) - 1
-        call mkl_csrdsymv(uplo, m, A, arow, acol, X, Y)
+        call mkl_dcsrsymv(uplo, m, A, arow, acol, X, Y)
     end subroutine csr_dmul_mv
 
 end module blas_wrappers
