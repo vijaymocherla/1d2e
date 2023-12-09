@@ -119,7 +119,7 @@ program main
     print*, "Using Imaginary time propagation (ITP) to get ground state......"
 
     call gen_trial_state(psi0)   
-    call imag_tprop(psi0, dt, print_nstep, etol, Ei, tstep)
+    call itp_on_the_fly(psi0, dt, print_nstep, etol, Ei, tstep)
     open(100, file='psi_itp.out')
     do i=1,ndim
         write(100,*) psi0(i)

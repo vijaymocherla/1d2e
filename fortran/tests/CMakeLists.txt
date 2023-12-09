@@ -20,6 +20,12 @@ set(CMAKE_BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_FC_FLAGS "-O3 -qmkl")
 
+
+add_executable(test_ho_dvr
+            ${tests}
+            test_ho_dvr.f90
+) 
+
 add_executable(test_1e_dvr
             ${tests}
             test_1e_dvr.f90
@@ -30,6 +36,9 @@ add_executable(test_2e_dvr
             test_2e_dvr.f90
 )               
 
+
+
+target_link_libraries(test_ho_dvr ${MKL_LIBRARIES})
 target_link_libraries(test_1e_dvr ${MKL_LIBRARIES})
 target_link_libraries(test_2e_dvr ${MKL_LIBRARIES})
 

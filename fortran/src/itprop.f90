@@ -7,7 +7,7 @@ module itprop
     implicit none
     private 
 
-    public :: imag_tprop, sparse_imag_tprop, gen_trial_state
+    public :: itp_on_the_fly, itp_sparse, gen_trial_state
 
     contains
     
@@ -70,7 +70,7 @@ module itprop
             !$omp do
             do u=1,ndim
                 do v=1,ndim
-                    psi_j(u) = psi_j(u) + a*oe_ho_hamiltonian(u,v)*psi_i(v)
+                    psi_j(u) = psi_j(u) + a*oe_scsw_hamiltonian(u,v)*psi_i(v)
                 end do
             end do
             !$omp end do
@@ -78,8 +78,9 @@ module itprop
         end if
     end subroutine
 
-    ! imaginary time propagation for finding the ground state wave fxn
-    subroutine imag_tprop(psi0, dt, print_nstep, etol, Ei, tstep)
+    ! imaginary time propagation for finding the ground state wave fxn  
+    ! with on-the-fly calculations of hamiltonian elements 
+    subroutine itp_on_the_fly(psi0, dt, print_nstep, etol, Ei, tstep)
         implicit none
         real(dp), allocatable, intent(inout) :: psi0(:)
         integer,  intent(in)    :: print_nstep
@@ -174,11 +175,11 @@ module itprop
         write(100,'(a,f16.8)') "Ei      = ", Ei
         write(100,*) ""
         close(100)
-    end subroutine imag_tprop
+    end subroutine itp_on_the_fly
     
 
     ! imaginary time propagation for a sparse hamiltonian
-    subroutine sparse_imag_tprop(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
+    subroutine itp_sparse(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
         implicit none
         real(dp), allocatable, intent(inout) :: h_array(:)
         integer(dp),  allocatable, intent(in) :: h_row(:)
@@ -286,6 +287,5 @@ module itprop
         write(100,'(a,f16.8)') "Ei      = ", Ei
         write(100,*) ""
         close(100)
-    end subroutine sparse_imag_tprop
-
+    end subroutine itp_sparse
 end module itprop

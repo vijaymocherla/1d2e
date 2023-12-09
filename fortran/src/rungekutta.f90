@@ -95,23 +95,23 @@ module rungekutta
     end subroutine real_tprop
 
     ! subroutine for imaginary time propagation
-    subroutine imag_tprop(H, psi0, dt, print_nstep, etol)
+    subroutine imag_tprop(H, psi0, dt, print_nstep, etol, Ei, tstep)
         use, intrinsic :: iso_fortran_env, only:dp=>real64
         use blas_wrappers
         implicit none
         real(dp), allocatable, intent(in) :: H(:,:)
         real(dp), allocatable, intent(inout) :: psi0(:)
         integer, intent(in) :: print_nstep
+        integer, intent(inout)  :: tstep
+        real(dp), intent(inout) :: Ei
         real(dp), intent(in) :: dt
         real(dp), intent(in) :: etol
-        real(dp)  :: t  ! time
-        integer :: n
-        integer :: tstep
-        real(dp), allocatable :: psi_i(:)
+        real(dp) :: t  ! time
+        real(dp), allocatable, dimension(:) :: psi_i
         real(dp), allocatable, dimension(:) :: k1, k2, k3, k4 
         real(dp), allocatable, dimension(:) :: kt
-        real(dp) :: norm, autocorr, E0, Ei, dE
-        real(dp) :: alpha
+        real(dp) :: norm, autocorr, E0, dE
+        integer :: n
         
         n = size(H, dim=1)
         allocate(k1(n), k2(n), k3(n), k4(n))
@@ -162,7 +162,14 @@ module rungekutta
             call dmul_ddot(kt, psi_i, Ei)
             dE = abs(E0 - Ei)
             E0 = Ei
+            ! checking for Energy convergence
             if (dE < etol) then
+                ! norm
+                call dmul_ddot(psi_i, psi_i, norm)
+                ! autocorr
+                call dmul_ddot(psi0, psi_i, autocorr)
+                write(100,'(4f32.16)') t, norm, autocorr, Ei
+                psi0 = psi_i
                 exit
             end if
         end do

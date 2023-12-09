@@ -1,8 +1,8 @@
 program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use two_electron_dvr
-    use itprop
     use lapack_wrappers, only:eigsh
+    use itprop
     implicit none
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)
@@ -17,24 +17,20 @@ program main
     n = 100                     ! size of 1e- grids
     ndim = n                    ! size of 2e- direct product space
     x0 = 10.0                   ! extent of 1d box
-    dx = 2.0d0*x0 / real(n-1,8)   ! grid-spacing
-    alpha = 0.01d0              ! 1e- soft coulomb parameter
-    beta = 0.01d0               ! e- correlation parameter
+    dx = 2.0d0*x0 / real(n-1,8) ! grid-spacing
+    alpha = 1.00d0              ! 1e- soft coulomb parameter
     multi_well_switch = .false. ! default for single well
     te_swtich = .false.         ! switch to test one-electron hamiltonian 
-    etol = 0.00000001            ! energy absolute tolerance 
+    etol = 0.000000001          ! energy absolute tolerance 
 
     print*, ""
-    print*, "   Harmonic Oscillator DVR   "
+    print*, "     1e- Single-well DVR     "
     print*, "-----------------------------"
     print('(a,f16.8)'), "x0     = ", x0
     print('(a,i16)'),   "n      = ", n
     print('(a,i16)'),   "ndim   = ", ndim
     print('(a,f16.8)'), "dx     = ", dx
-    print*, "" 
-    print('(a)'), "Soft-Coulomb Parameters:"
     print('(a,f16.8)'), "alpha  = ", alpha
-    print('(a,f16.8)'), "beta   = ", beta
     print*, "" 
     ! Position grid points
     allocate(x(n))
@@ -52,9 +48,9 @@ program main
     print*, "Generating Hamiltonian Matrix......"
     print*, "" 
     do i=1,ndim
-        hamiltonian(i,i) = oe_ho_hamiltonian(i,i)
+        hamiltonian(i,i) = oe_scsw_hamiltonian(i,i)
         do j=i+1,ndim
-            hamiltonian(i,j) = oe_ho_hamiltonian(i,j)
+            hamiltonian(i,j) = oe_scsw_hamiltonian(i,j)
             hamiltonian(j,i) = hamiltonian(i,j)
         end do
     end do
@@ -82,7 +78,8 @@ program main
     dt  = 0.0001d0
 
     call gen_trial_state(psi0)    
-    call imag_tprop(psi0, dt, 100, etol, Ei, tstep)
+
+    call itp_on_the_fly(psi0, dt, 100, etol, Ei, tstep)
     print*, ""
     print*, "Completed Imaginary time propagation (ITP)."
     print*, ""
