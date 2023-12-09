@@ -181,8 +181,8 @@ module itprop
     subroutine sparse_imag_tprop(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
         implicit none
         real(dp), allocatable, intent(inout) :: h_array(:)
-        integer,  allocatable, intent(in) :: h_row(:)
-        integer,  allocatable, intent(in) :: h_col(:)
+        integer(dp),  allocatable, intent(in) :: h_row(:)
+        integer(dp),  allocatable, intent(in) :: h_col(:)
         real(dp), allocatable, intent(inout) :: psi0(:)
         integer,  intent(in)    :: print_nstep
         integer, intent(inout)  :: tstep

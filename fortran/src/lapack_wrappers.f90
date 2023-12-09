@@ -19,7 +19,6 @@ module lapack_wrappers
         allocate(work(3*ndim))
         vecs = A
         call dsyev(jobz, uplo, ndim, vecs, ndim, vals, work, 3*ndim, info)
-        print*, info
     end subroutine eigsh
 
 end module lapack_wrappers
