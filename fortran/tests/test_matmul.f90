@@ -14,8 +14,8 @@ program main
     complex(dp), allocatable, dimension(:) :: u, v
 
     integer :: ndim, i
-    real(dp) :: res
-    complex(dp) :: cres
+    real(dp) :: res, alpha
+    complex(dp) :: cres, alpha_complex
     integer :: ci
     character (len=1024) :: arg
     
@@ -66,7 +66,8 @@ program main
 
     !testing dmul_mv
     print*, "Testing: 'dmul_mv'...... "
-    call dmul_mv(B, x, y)
+    alpha = 1.0
+    call dmul_mv(B, x, y, alpha)
     ! print*, x
     ! print*, B
     ! print*, y
@@ -88,7 +89,8 @@ program main
 
     !testing zmul_mv
     print*, "Testing: 'zmul_mv'...... "
-    call zmul_mv(E, u, v)
+    alpha_complex  = (1.0d0, 0.0d0)
+    call zmul_mv(E, u, v, alpha_complex)
     ! print*, u
     ! print*, E
     ! print*, v
