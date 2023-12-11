@@ -127,7 +127,7 @@ module blas_wrappers
 
     ! wrapper for MKL SPARSE ZSYMV
     subroutine csr_zmul_mv(A, arow, acol,  X, Y)
-        integer(dp), allocatable, dimension(:), intent(in) :: arow, acol
+        integer, allocatable, dimension(:), intent(in) :: arow, acol
         complex(dp), allocatable, dimension(:), intent(in) :: A
         complex(dp), allocatable, dimension(:), intent(in) :: X, Y
         character (len=1) :: uplo
@@ -140,7 +140,7 @@ module blas_wrappers
     ! wrapper for MKL SPARSE DSYMV
     subroutine csr_dmul_mv(A, arow, acol, X, Y)
         implicit none
-        integer(dp), allocatable, dimension(:), intent(in) :: arow, acol
+        integer, allocatable, dimension(:), intent(in) :: arow, acol
         real(dp), allocatable, dimension(:), intent(in) :: A
         real(dp), allocatable, dimension(:), intent(in) :: X, Y
         integer :: m

@@ -182,8 +182,8 @@ module itprop
     subroutine itp_sparse(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
         implicit none
         real(dp), allocatable, intent(inout) :: h_array(:)
-        integer(dp),  allocatable, intent(in) :: h_row(:)
-        integer(dp),  allocatable, intent(in) :: h_col(:)
+        integer, allocatable, intent(in) :: h_row(:)
+        integer, allocatable, intent(in) :: h_col(:)
         real(dp), allocatable, intent(inout) :: psi0(:)
         integer,  intent(in)    :: print_nstep
         integer, intent(inout)  :: tstep
@@ -235,7 +235,6 @@ module itprop
                 call omp_dotprod(psi0, psi_i, autocorr)
                 write(100,'(4f32.16)') t, norm, autocorr, Ei 
             end if
-            
             ! RK4 step
             ! computing k1
             call csr_dmul_mv(h_array, h_row, h_col, psi_i, k1)
@@ -253,6 +252,7 @@ module itprop
             call omp_daxpy(dt/3.0d0, k2, kt, psi_i)
             call omp_daxpy(dt/3.0d0, k3, psi_i, kt)
             call omp_daxpy(dt/6.0d0, k4, kt, psi_i)
+
             ! intermediate normalisation only for itp
             call omp_normalize(psi_i)
             ! time step increment
@@ -261,7 +261,6 @@ module itprop
             
             ! calculating energy (Ei)
             call csr_dmul_mv(h_array, h_row, h_col, psi_i, kt)
-            ! call omp_minus_ham_psi(a, psi_i, kt) ! omp_minus_ham_psi gives -(\hat{H}.\psi)
             call omp_dotprod(kt, psi_i, Ei)   ! Ei = <\psi|-\hat{H}|\psi>
             Ei = -1.0d0*Ei                    ! multiply -1.0d0 to get correct energy
             dE = abs(E0 - Ei)
@@ -288,4 +287,5 @@ module itprop
         write(100,*) ""
         close(100)
     end subroutine itp_sparse
+
 end module itprop

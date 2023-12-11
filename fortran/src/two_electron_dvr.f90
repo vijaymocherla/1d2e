@@ -9,7 +9,8 @@ module two_electron_dvr
                te_kinetic, te_sw_potential, te_mw_potential
 
     public  :: oe_ho_hamiltonian, oe_scsw_hamiltonian, oe_scmw_hamiltonian, & 
-               te_sw_hamiltonian, te_mw_hamiltonian
+               te_sw_hamiltonian, te_mw_hamiltonian, &
+               sparse_te_sw_hamiltonian!, sparse_te_mw_hamiltonian
 
     ! grid and soft-coulomb potential parameters
     real(dp), public :: x0    ! grid size (-x0, x0)
@@ -188,5 +189,45 @@ module two_electron_dvr
         h_uv = te_kinetic(u, v) + te_mw_potential(u, v)
     end function te_mw_hamiltonian
 
+    ! sparse hamiltonian 
+    subroutine sparse_te_sw_hamiltonian(h_array, row_idx, col_idx)
+        implicit none
+        real(dp), allocatable, intent(out) :: h_array(:)
+        integer, allocatable, intent(out) :: row_idx(:)
+        integer, allocatable, intent(out) :: col_idx(:)
+        integer :: ndim, nsparse
+        integer :: u, v
+        integer :: i, j
+        real(dp) :: atol
+        real(dp) :: h_uv
+        
+        ndim = n**2
+        atol = 1e-8
+        nsparse= 2*n - 1
+        allocate(h_array(ndim*nsparse))
+        allocate(col_idx(ndim*nsparse))
+        allocate(row_idx(ndim+1))
+        !$omp parallel shared(ndim, h_array, col_idx, row_idx) private(u,v,i,j)
+        !$omp do
+        do u=1,ndim
+            i = 1
+            row_idx(u) = (u-1)*nsparse + 1
+            do v=1,ndim
+                h_uv = te_sw_hamiltonian(u,v)
+                if (abs(h_uv) >atol) then
+                    j = (u-1)*nsparse + i
+                    h_array(j) = h_uv
+                    col_idx(j) = v
+                    i = i + 1
+                end if
+            end do
+        end do
+        !$omp end do
+        !$omp end parallel
+        row_idx(ndim+1) = ndim*nsparse + 1
+        
+    end subroutine sparse_te_sw_hamiltonian
+
+    
 end module two_electron_dvr
 
