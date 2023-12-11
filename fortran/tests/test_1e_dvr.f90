@@ -9,7 +9,7 @@ program main
     real(dp), allocatable :: psi0(:), psi(:)
     integer :: i,j, tstep, ndim
     real(dp) :: dt
-    real(dp) :: norm, etol, Ei
+    real(dp) :: etol, Ei
     
 
     ! setting parameters for grids
