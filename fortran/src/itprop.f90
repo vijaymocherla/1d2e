@@ -1,6 +1,6 @@
 module itprop
     use, intrinsic ::iso_fortran_env, only:dp=>real64
-    use blas_wrappers, only: csr_dmul_mv
+    use blas_wrappers, only: csr_dmul_mv, dmul_ddot
     use helpers, only: omp_normalize, omp_daxpy, omp_dotprod
     use two_electron_dvr
 
@@ -216,7 +216,7 @@ module itprop
         h_array = -1.0d0* h_array
         ! omp_minus_ham_psi gives -(\hat{H}.\psi)
         call csr_dmul_mv(h_array, h_row, h_col, psi_i, kt)
-        call omp_dotprod(kt, psi_i, Ei)   ! Ei = <\psi|-\hat{H}|\psi>
+        call dmul_ddot(kt, psi_i, Ei)   ! Ei = <\psi|-\hat{H}|\psi>
         Ei = -1.0d0*Ei                    ! multiply -1.0d0 to get correct energy
         open(100, file='imag_tprop.out')
         ! OUTFILE headers
@@ -230,9 +230,9 @@ module itprop
             ! print output to itp.out
             if (modulo(tstep, print_nstep) == 0) then
                 ! norm
-                call omp_dotprod(psi_i, psi_i, norm)
+                call dmul_ddot(psi_i, psi_i, norm)
                 ! autocorr
-                call omp_dotprod(psi0, psi_i, autocorr)
+                call dmul_ddot(psi0, psi_i, autocorr)
                 write(100,'(4f32.16)') t, norm, autocorr, Ei 
             end if
             ! RK4 step
@@ -261,16 +261,16 @@ module itprop
             
             ! calculating energy (Ei)
             call csr_dmul_mv(h_array, h_row, h_col, psi_i, kt)
-            call omp_dotprod(kt, psi_i, Ei)   ! Ei = <\psi|-\hat{H}|\psi>
+            call dmul_ddot(kt, psi_i, Ei)   ! Ei = <\psi|-\hat{H}|\psi>
             Ei = -1.0d0*Ei                    ! multiply -1.0d0 to get correct energy
             dE = abs(E0 - Ei)
             E0 = Ei
             ! checking for Energy convergence
             if (dE < etol) then
                 ! norm
-                call omp_dotprod(psi_i, psi_i, norm)
+                call dmul_ddot(psi_i, psi_i, norm)
                 ! autocorr
-                call omp_dotprod(psi0, psi_i, autocorr)
+                call dmul_ddot(psi0, psi_i, autocorr)
                 write(100,'(4f32.16)') t, norm, autocorr, Ei
                 psi0 = psi_i
                 exit

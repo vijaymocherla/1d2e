@@ -42,6 +42,10 @@ program main
             call get_command_argument(ci+1,arg)
             read(arg, '(f32.16)') dt
             ci = ci + 2    
+        else if (trim(arg)=="-etol") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') etol
+            ci = ci + 2    
         else if (trim(arg)=="-print_nstep") then
             call get_command_argument(ci+1,arg)
             read(arg, '(i32)') print_nstep

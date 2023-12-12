@@ -47,7 +47,7 @@ module helpers
         integer :: ndim
         result = 0.0d0
         ndim = size(psi_i)
-        !$omp parallel shared(ndim, psi_i, psi_j) private(u)
+        !$omp parallel default(none) private(u) shared(ndim, psi_i, psi_j, result)
         !$omp do reduction ( + : result )
         do u = 1, ndim
             result = result + psi_i(u) * psi_j(u)
@@ -65,7 +65,7 @@ module helpers
         integer :: i, ndim
         ndim = size(x_array)
         z_array = 0.0d0
-        !$omp parallel shared(ndim, a, x_array, y_array) private(i)
+        !$omp parallel default(none) private(i) shared(ndim, a, x_array, y_array, z_array)
         !$omp do
         do i=1,ndim
             z_array(i) = a*x_array(i) + y_array(i)
@@ -82,7 +82,7 @@ module helpers
         ndim = size(psi)
         call omp_dotprod(psi, psi, norm)
         inv_norm = 1.0d0/(norm)**(0.5)
-        !$omp parallel shared(ndim, inv_norm, psi) private(u)
+        !$omp parallel default(none) private(u) shared(ndim, inv_norm, psi)
         !$omp do
         do u=1,ndim
             psi(u) = inv_norm * psi(u)
@@ -90,6 +90,17 @@ module helpers
         !$omp end do 
         !$omp end parallel
     end subroutine omp_normalize
+
+    ! ! normalise an array
+    ! subroutine normalize(psi)
+    !     real(dp), intent(inout) :: psi(:)
+    !     real(dp) :: norm, inv_norm
+    !     integer :: ndim
+    !     ndim = size(psi)
+    !     call dmul_ddot(psi, psi, norm)
+    !     inv_norm = 1.0d0/(norm)**(0.5)
+    !     psi = inv_norm * psi
+    ! end subroutine normalize    
 
 
 end module helpers

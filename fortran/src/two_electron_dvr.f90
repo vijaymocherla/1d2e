@@ -207,7 +207,7 @@ module two_electron_dvr
         allocate(h_array(ndim*nsparse))
         allocate(col_idx(ndim*nsparse))
         allocate(row_idx(ndim+1))
-        !$omp parallel shared(ndim, h_array, col_idx, row_idx) private(u,v,i,j)
+        !$omp parallel default(none) private(u,v,i,j,h_uv) shared(ndim, nsparse, atol, h_array, col_idx, row_idx)
         !$omp do
         do u=1,ndim
             i = 1
