@@ -197,7 +197,7 @@ module itprop
         real(dp) :: const ! constant for daxpy operations
         real(dp) :: norm, autocorr, E0, dE
         real(dp) :: a
-        integer :: ndim
+        integer :: ndim,i
 
         ! allocating arrays
         ndim = size(psi0)
@@ -248,13 +248,17 @@ module itprop
             call omp_daxpy(1.0d0*dt, k3, psi_i, kt)
             call csr_dmul_mv(h_array, h_row, h_col, kt, k4)
             ! parallelising: psi = psi + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
-            call omp_daxpy(dt/6.0d0, k1, psi_i, kt)
-            call omp_daxpy(dt/3.0d0, k2, kt, psi_i)
-            call omp_daxpy(dt/3.0d0, k3, psi_i, kt)
-            call omp_daxpy(dt/6.0d0, k4, kt, psi_i)
+            !$omp parallel private(i) shared(ndim, dt, psi_i, k1, k2, k3, k4)
+            !$omp do
+            do i=1, ndim
+                psi_i(i) = psi_i(i) + dt/6.0d0*k1(i) + dt/3.0d0*k2(i) + dt/3.0d0*k3(i) + dt/6.0d0*k4(i)
+            end do
+            !$omp end do
+            !$omp end parallel
 
             ! intermediate normalisation only for itp
-            call omp_normalize(psi_i)
+            call dmul_ddot(psi_i, psi_i, norm)
+            psi_i = (1/norm)**0.5 * psi_i
             ! time step increment
             t = t + dt
             tstep = tstep + 1

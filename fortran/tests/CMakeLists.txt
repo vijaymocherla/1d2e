@@ -17,7 +17,7 @@ link_directories(${MKL_LIBRARIES})
 
 set(CMAKE_BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-set(CMAKE_Fortran_FLAGS "-O3 -heap-arrays -qmkl -qopenmp")
+set(CMAKE_Fortran_FLAGS "-O3 -qmkl -qopenmp -funroll-loops")
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 

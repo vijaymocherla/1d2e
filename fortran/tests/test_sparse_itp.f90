@@ -17,7 +17,7 @@ program main
     
     ci = 1
     ! Reading input parameters
-    n = 32                       ! size of 1e- grids
+    n = 64                       ! size of 1e- grids
     x0 = 10.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
     beta  = 1.00d0               ! e- correlation parameter
