@@ -192,9 +192,9 @@ module two_electron_dvr
     ! sparse hamiltonian 
     subroutine sparse_te_sw_hamiltonian(h_array, row_idx, col_idx)
         implicit none
-        real(dp), allocatable, intent(out) :: h_array(:)
-        integer, allocatable, intent(out) :: row_idx(:)
-        integer, allocatable, intent(out) :: col_idx(:)
+        real(dp), intent(inout) :: h_array(:)
+        integer,  intent(out) :: row_idx(:)
+        integer,  intent(out) :: col_idx(:)
         integer :: ndim, nsparse
         integer :: u, v
         integer :: i, j
@@ -204,9 +204,9 @@ module two_electron_dvr
         ndim = n**2
         atol = 1e-8
         nsparse= 2*n - 1
-        allocate(h_array(ndim*nsparse))
-        allocate(col_idx(ndim*nsparse))
-        allocate(row_idx(ndim+1))
+        ! allocate(h_array(ndim*nsparse))
+        ! allocate(col_idx(ndim*nsparse))
+        ! allocate(row_idx(ndim+1))
         !$omp parallel default(none) private(u,v,i,j,h_uv) shared(ndim, nsparse, atol, h_array, col_idx, row_idx)
         !$omp do
         do u=1,ndim

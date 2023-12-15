@@ -6,9 +6,8 @@ module helpers
     
     private
 
-    public zexp_array, dexp_array, &
+    public zexp_array, dexp_array, omp_zaxpy, &
            omp_normalize, omp_daxpy, omp_dotprod
-
     contains
 
     ! Returns expm(1j*alpha*x)
@@ -74,6 +73,24 @@ module helpers
         !$omp end do
         !$omp end parallel
     end subroutine
+
+    ! parallelised constant times a vector plus a vector ( with double precision) 
+    subroutine omp_zaxpy(a, x_array, y_array, z_array)
+        implicit none
+        complex(dp), intent(in) :: a
+        complex(dp), dimension(:), intent(in)  :: x_array, y_array
+        complex(dp), dimension(:), intent(out) :: z_array
+        integer :: i, ndim
+        ndim = size(x_array)
+        z_array = 0.0d0
+        !$omp parallel private(i) shared(ndim, a, x_array, y_array, z_array)
+        !$omp do
+        do i=1,ndim
+            z_array(i) = a*x_array(i) + y_array(i)
+        end do
+        !$omp end do
+        !$omp end parallel
+    end subroutine omp_zaxpy
 
     ! parallelised vector normalisation
     subroutine omp_normalize(psi)
