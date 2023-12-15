@@ -2,7 +2,7 @@ program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use two_electron_dvr
     use lapack_wrappers, only:eigsh
-    use itprop
+    use imag_tprop
     implicit none
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)

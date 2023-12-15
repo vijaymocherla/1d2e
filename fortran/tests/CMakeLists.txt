@@ -17,31 +17,37 @@ link_directories(${MKL_LIBRARIES})
 
 set(CMAKE_BINARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-set(CMAKE_Fortran_FLAGS "-O3 -qmkl -qopenmp -funroll-loops")
+set(CMAKE_Fortran_FLAGS "-O3 -qmkl -qopenmp -funroll-loops -heap-arrays")
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-add_executable(test_ho_dvr
-            ${tests}
-            test_ho_dvr.f90
-) 
+# add_executable(test_ho_dvr
+#             ${tests}
+#             test_ho_dvr.f90
+# ) 
 
-add_executable(test_1e_dvr
+# add_executable(test_1e_dvr
+#             ${tests}
+#             test_1e_dvr.f90
+# )               
+
+# add_executable(test_2e_dvr
+#             ${tests}
+#             test_2e_dvr.f90
+# )   
+
+# add_executable(test_sparse_itp
+#             ${tests}
+#             test_sparse_itp.f90
+# )   
+
+# add_executable(test_sparse_blas
+#             ${tests}
+#             test_sparse_blas.f90
+# ) 
+
+add_executable(test_sparse_rtp
             ${tests}
-            test_1e_dvr.f90
+            test_sparse_rtp.f90
 )               
 
-add_executable(test_2e_dvr
-            ${tests}
-            test_2e_dvr.f90
-)               
-add_executable(test_sparse_itp
-            ${tests}
-            test_sparse_itp.f90
-)               
-
-
-add_executable(test_sparse_blas
-            ${tests}
-            test_sparse_blas.f90
-) 

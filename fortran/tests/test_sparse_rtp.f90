@@ -1,22 +1,30 @@
-!
-!   Imaginary time propagation of the wavefunction 
-!
+! 
+!   Real time propagation of 2e- wavefunction
+! 
 program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use two_electron_dvr
+    use iso_c_binding
     use lapack_wrappers, only:eigsh
-    use imag_tprop
+    use blas_wrappers
+    use real_tprop
 
     implicit none
-    real(dp), allocatable :: h_array(:) 
+    complex(dp), allocatable, target :: h_array(:)
+    real(dp), pointer :: h_array_real(:)=> null()
     integer,  allocatable :: h_row(:)
     integer,  allocatable :: h_col(:)
-    real(dp), allocatable :: psi0(:)
-    integer  :: i, k, tstep, print_nstep, ndim, nsparse
-    real(dp) :: dt
-    real(dp) :: etol, Ei
-    integer  :: ci
-    character (len=32) :: arg
+    complex(dp), allocatable :: psi0(:)
+    integer :: ndim              ! size of 2e- matrix
+    integer :: nsparse           ! no. of non-zero elements per row
+    integer  :: i, tstep         ! iteration variables
+    integer  :: print_nstep      ! no. of time-steps after which to print
+    real(dp) :: Ei               ! energy at ti
+    real(dp) :: dx1, dx2         ! shift in wavefxn position
+    real(dp) :: dt               !  
+    real(dp) :: ti, tf           !
+    integer  :: ci               ! 
+    character (len=32) :: arg    !
     
     ci = 1
     ! Reading input parameters
@@ -24,8 +32,9 @@ program main
     x0 = 10.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
     beta  = 1.00d0               ! e- correlation parameter
-    etol = 0.000000001           ! energy absolute tolerance 
-    dt  = 0.001d0
+    ti = 0.0d0                   ! initial time 
+    tf = 1.000d0                 ! final time
+    dt  = 0.001d0                ! time step of propagation
     print_nstep = 100
     do 
         call get_command_argument(ci, arg)
@@ -45,9 +54,13 @@ program main
             call get_command_argument(ci+1,arg)
             read(arg, '(f32.16)') dt
             ci = ci + 2    
-        else if (trim(arg)=="-etol") then
+        else if (trim(arg)=="-ti") then
             call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') etol
+            read(arg, '(f32.16)') ti
+            ci = ci + 2    
+        else if (trim(arg)=="-tf") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') tf
             ci = ci + 2    
         else if (trim(arg)=="-print_nstep") then
             call get_command_argument(ci+1,arg)
@@ -65,7 +78,7 @@ program main
     dx = 2.0d0*x0 / real(n-1,8)    ! grid-spacing
     multi_well_switch = .false.  ! default for single well
     te_swtich = .true.           ! switch to test one-electron hamiltonian 
-    
+
     print*, ""
     print*, "    Two-electron DVR    "
     print*, "------------------------"
@@ -86,39 +99,41 @@ program main
         x(i) = -x0 + (i-1)*dx
     end do
     
-    nsparse = 2*ndim**2 - 1
     ! Allocating arrays
-    allocate(h_array(nsparse))
+    nsparse = 2*n - 1
+    allocate(h_array(ndim*nsparse))
+    allocate(h_col(ndim*nsparse))
     allocate(h_row(ndim+1))
-    allocate(h_col(nsparse))
     allocate(psi0(ndim))
 
-    h_array = 0.0d0
+    h_array = cmplx(0.0d0,0.0d0, kind=dp)
     print*, "Generating Hamiltonian Matrix......"
     print*, "" 
-    call sparse_te_sw_hamiltonian(h_array, h_row, h_col)
+    call c_f_pointer(c_loc(h_array), h_array_real, shape=[size(h_array)])
+    call sparse_te_sw_hamiltonian(h_array_real, h_row, h_col)
+    h_array%re = h_array_real
+    h_array%im = 0.0d0
     print*, "Completed generating Hamiltonian Matrix!"
     print*, "" 
-    k = size(h_array)
     
-    print*, "Using Imaginary time propagation (ITP) to get ground state......"
+    print*, "Propagating the wavefunction......"
 
-    call gen_trial_state(psi0)
-
-    call itp_sparse(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
-    open(100, file='psi_itp.out')
+    dx1 = 0.0d0
+    dx2 = 0.0d0
+    call gen_intial_wfn(psi0, dx1, dx2)
+    call rtp_sparse(h_array, h_row, h_col, psi0, ti, tf, dt, print_nstep, Ei, tstep)
+    open(100, file='final.wfn')
     do i=1,ndim
         write(100,*) psi0(i)
     end do
     close(100)
     print*, ""
-    print*, "Completed Imaginary time propagation (ITP)."
-    print*, ""
-    print*, "ITP Summary:"
-    print*, "------------"
+    print*, "   Summary of Real time propagation   "
+    print*, "--------------------------------------"
+    print*, "n       = ", n
     print*, "dt      = ", dt
-    print*, "nstep   = ", tstep
-    print*, "E_conv  = ", etol
+    print*, "ti      = ", ti
+    print*, "tf      = ", tf
     print*, "Ei      = ", Ei
     print*, ""
 end program main
