@@ -109,10 +109,17 @@ program main
     h_array = cmplx(0.0d0,0.0d0, kind=dp)
     print*, "Generating Hamiltonian Matrix......"
     print*, "" 
+    ! Some programming stunts using pointers to avoid creating a new array.
+    ! Assuming h_array is contigous in memory, assigning a c_pointer of size=ndim
+    ! to a fortran_pointer (h_array_real). This effectively means assigning 
+    ! first ndim addresses of complex array (h_array) to the fortran_pointer.
     call c_f_pointer(c_loc(h_array), h_array_real, shape=[size(h_array)])
     call sparse_te_sw_hamiltonian(h_array_real, h_row, h_col)
+    ! Assigning h_array_real addresses real part of complex array and setting 
+    ! imag. part to zero.    
     h_array%re = h_array_real
     h_array%im = 0.0d0
+
     print*, "Completed generating Hamiltonian Matrix!"
     print*, "" 
     
