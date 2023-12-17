@@ -20,14 +20,22 @@ program main
     integer  :: i, tstep         ! iteration variables
     integer  :: print_nstep      ! no. of time-steps after which to print
     real(dp) :: Ei               ! energy at ti
-    real(dp) :: dx1, dx2         ! shift in wavefxn position
+    real(dp) :: p01              !
+    real(dp) :: p02              ! shift in wavefxn position
+    real(dp) :: zeta             ! effective nuclear charge in efn ansatz
     real(dp) :: dt               !  
     real(dp) :: ti, tf           !
-    integer  :: ci               ! 
+    integer  :: ci, rc           ! 
     character (len=32) :: arg    !
-    
-    ci = 1
-    ! Reading input parameters
+    character (len=32) :: input_file
+    character (len=32) :: output_file
+
+    namelist /inp_rtp/ n, x0, z, alpha, beta, &
+                          multi_well_switch, te_swtich, & 
+                          p01, p02, zeta, &
+                          ti, tf, dt, print_nstep 
+        
+    ! Default input parameters
     n = 64                       ! size of 1e- grids
     x0 = 10.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
@@ -36,63 +44,59 @@ program main
     tf = 1.000d0                 ! final time
     dt  = 0.001d0                ! time step of propagation
     print_nstep = 100
+    p01 = 0.0d0
+    p02 = 0.0d0
+    zeta = 1.0d0 
+    ! setting parameters for grids and calculations
+    z = 2.0d0
+    m = 1.0d0                    ! mass of the electron
+    multi_well_switch = .false.  ! default for single well
+    te_swtich = .true.           ! switch to test one-electron hamiltonian 
+    ci = 1
+    output_file = 'real_tprop.out' 
+    ! Checking for input file 
     do 
         call get_command_argument(ci, arg)
-        if (trim(arg)=="-n") then
+        if (trim(arg)=="-i") then
             call get_command_argument(ci+1,arg)
-            read(arg, '(i32)') n
+            read(arg, '(a32)') input_file
             ci = ci + 2
-        else if (trim(arg)=="-alpha") then
+        else if (trim(arg)=="-o") then
             call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') alpha
-            ci = ci + 2
-        else if (trim(arg)=="-beta") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') beta
-            ci = ci + 2
-        else if (trim(arg)=="-dt") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') dt
-            ci = ci + 2    
-        else if (trim(arg)=="-ti") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') ti
-            ci = ci + 2    
-        else if (trim(arg)=="-tf") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') tf
-            ci = ci + 2    
-        else if (trim(arg)=="-print_nstep") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(i32)') print_nstep
+            read(arg, '(a32)') output_file
             ci = ci + 2
         else
             exit
         end if        
     end do
     
-    ! setting parameters for grids and calculations
-    z = 2.0d0
-    m = 1.0d0                    ! mass of the electron
+    ! reading input parameters
+    open(100, file=trim(input_file))
+        read(100, nml=inp_rtp, iostat=rc)
+        if (rc /= 0) then
+            print*, '!! I/O ERROR: Can not read input file. IOSTAT=',rc
+            stop
+        end if
+    close(100)
+        
     ndim = n**2                  ! size of 2e- direct product space
-    dx = 2.0d0*x0 / real(n-1,8)    ! grid-spacing
-    multi_well_switch = .false.  ! default for single well
-    te_swtich = .true.           ! switch to test one-electron hamiltonian 
-
-    print*, ""
-    print*, "    Two-electron DVR    "
-    print*, "------------------------"
-    print('(a,f16.8)'), "x0     = ", x0
-    print('(a,f16.8)'), "m      = ", m
-    print('(a,f16.8)'), "Z      = ", z
-    print('(a,i16)'),   "n      = ", n
-    print('(a,i16)'),   "ndim   = ", ndim
-    print('(a,f16.8)'), "dx     = ", dx
-    print*, "" 
-    print('(a)'), "Soft-Coulomb Parameters:"
-    print('(a,f16.8)'), "alpha  = ", alpha
-    print('(a,f16.8)'), "beta   = ", beta
-    print*, "" 
+    dx = 2.0d0*x0 / real(n-1,8)  ! grid-spacing
+        
+    open(200, file=trim(output_file))
+    write(200,*) ""
+    write(200,*) "    Two-electron DVR    "
+    write(200,*) "------------------------"
+    write(200,'(a,f16.8)') "x0     = ", x0
+    write(200,'(a,f16.8)') "m      = ", m
+    write(200,'(a,f16.8)') "Z      = ", z
+    write(200,'(a,i16)')   "n      = ", n
+    write(200,'(a,i16)')   "ndim   = ", ndim
+    write(200,'(a,f16.8)') "dx     = ", dx
+    write(200,*) "" 
+    write(200,'(a)') "Soft-Coulomb Parameters:"
+    write(200,'(a,f16.8)') "alpha  = ", alpha
+    write(200,'(a,f16.8)') "beta   = ", beta
+    write(200,*) "" 
     ! Position grid points
     allocate(x(n))
     do i=1,n
@@ -107,8 +111,8 @@ program main
     allocate(psi0(ndim))
 
     h_array = cmplx(0.0d0,0.0d0, kind=dp)
-    print*, "Generating Hamiltonian Matrix......"
-    print*, "" 
+    write(200,*) "Generating Hamiltonian Matrix......"
+    write(200,*) "" 
     ! Some programming stunts using pointers to avoid creating a new array.
     ! Assuming h_array is contigous in memory, assigning a c_pointer of size=ndim
     ! to a fortran_pointer (h_array_real). This effectively means assigning 
@@ -119,28 +123,33 @@ program main
     ! imag. part to zero.    
     h_array%re = h_array_real
     h_array%im = 0.0d0
-
-    print*, "Completed generating Hamiltonian Matrix!"
-    print*, "" 
+    write(200,*) "Completed generating Hamiltonian Matrix!"
+    write(200,*) "" 
     
-    print*, "Propagating the wavefunction......"
+    write(200,*) "    Initial wavefxn ansatz    "
+    write(200,*) "------------------------------"
+    write(200,'(a,f16.8)') "zeta    = ", zeta
+    write(200,'(a,f16.8)') "p01     = ", p01
+    write(200,'(a,f16.8)') "p02     = ", p02
+    call gen_intial_wfn(psi0, p01, p02, zeta)
+    write(200,*) ""
 
-    dx1 = 0.0d0
-    dx2 = 0.0d0
-    call gen_intial_wfn(psi0, dx1, dx2)
+    write(200,*) ""
+    write(200,*) "        Real time propagation         "
+    write(200,*) "--------------------------------------"
+    write(200,*) "n       = ", n
+    write(200,*) "dt      = ", dt
+    write(200,*) "ti      = ", ti
+    write(200,*) "tf      = ", tf
+    write(200,*) ""
+    write(200,*) "Propagating the wavefunction......"
     call rtp_sparse(h_array, h_row, h_col, psi0, ti, tf, dt, print_nstep, Ei, tstep)
+    write(200,*) ""
+    write(200,*) "Completed Real-time propagation!"
+    write(200,*) ""
     open(100, file='final.wfn')
     do i=1,ndim
         write(100,*) psi0(i)
     end do
     close(100)
-    print*, ""
-    print*, "   Summary of Real time propagation   "
-    print*, "--------------------------------------"
-    print*, "n       = ", n
-    print*, "dt      = ", dt
-    print*, "ti      = ", ti
-    print*, "tf      = ", tf
-    print*, "Ei      = ", Ei
-    print*, ""
 end program main

@@ -11,32 +11,31 @@ module real_tprop
     
     contains 
 
-    subroutine gen_intial_wfn(psi, dx1, dx2)
-        real(dp),  intent(in) :: dx1, dx2
+    subroutine gen_intial_wfn(psi, p01, p02, zeta)
+        real(dp),  intent(in) :: p01, p02, zeta
         complex(dp), intent(out) :: psi(:)
-        real(dp), allocatable :: psi_temp(:)
         integer :: u, i, j
-        real(dp) :: zeta
         real(dp) :: norm
+        complex(dp) :: res
+        complex(dp) :: c1, c2
         integer :: ndim
-        zeta = 1.0d0 ! effective nuclear charge for helium in 3D
         ndim = size(psi)
-        allocate(psi_temp(ndim))
-        ! generating trail state psi(x1,x2) = |x1-x2| exp(-x1)*exp(-x2)
-        !$omp parallel shared(ndim, x, psi_temp) private(u)
+        c1 = cmplx(zeta, -p01, kind=dp)
+        c2 = cmplx(zeta, -p02, kind=dp)
+        ! generating trail state
+        !$omp parallel shared(ndim, x, psi, c1, c2) private(u)
         !$omp do
         do u=1,ndim
             i = ((u-1)/n) + 1
             j = modulo(u-1, n) + 1
-            psi_temp(u) = exp(-zeta*(abs(x(i)-dx1)+ abs(x(j)-dx2)))
+            psi(u) = exp(-c1*abs(x(i)) - c2*abs(x(j)))
         end do
         !$omp end do
         !$omp end parallel
         ! normalizing trial state
-        call dmul_ddot(psi_temp, psi_temp, norm)
-        psi_temp = 1.0d0/(norm)**(0.5) * psi_temp
-        psi = cmplx(psi_temp,0.0d0, kind=dp)
-        deallocate(psi_temp)
+        call zmul_zdotc(psi, psi, res)
+        norm = real(res,kind=dp)
+        psi = 1.0d0/(norm)**(0.5) * psi
     end subroutine gen_intial_wfn
 
     subroutine rtp_sparse(h_array, h_row, h_col, psi0, ti, tf, dt, print_nstep, Ei, tstep)
@@ -88,7 +87,7 @@ module real_tprop
                 norm = real(res, kind=dp)
                 ! autocorr
                 call zmul_zdotc(psi0, psi_i, res)
-                autocorr = real(norm, kind=dp)
+                autocorr = abs(res)**2
                 ! calculating energy Ei = <\psi|-\hat{H}|\psi>
                 call csr_zmul_mv(h_array, h_row, h_col, psi_i, kt)
                 call zmul_zdotc(kt, psi_i, res)
@@ -130,17 +129,18 @@ module real_tprop
             t = t + dt
             tstep = tstep + 1
             
-        end do    
-        write(100,*) ""
-        write(100,*) "   Summary of Real time propagation   "
-        write(100,*) "--------------------------------------"
-        write(100,'(a,i16)')   "n               = ", n
-        write(100,'(a,i16)')   "print_nstep     = ", print_nstep
-        write(100,'(a,f16.8)') "dt              = ", dt
-        write(100,'(a,f16.8)') "ti              = ", ti
-        write(100,'(a,f16.8)') "tf              = ", tf
-        write(100,'(a,f16.8)') "Ei              = ", Ei
-        write(100,*) ""
+        end do 
+        psi0 = psi_i   
+        ! write(100,*) ""
+        ! write(100,*) "   Summary of Real time propagation   "
+        ! write(100,*) "--------------------------------------"
+        ! write(100,'(a,i16)')   "n               = ", n
+        ! write(100,'(a,i16)')   "print_nstep     = ", print_nstep
+        ! write(100,'(a,f16.8)') "dt              = ", dt
+        ! write(100,'(a,f16.8)') "ti              = ", ti
+        ! write(100,'(a,f16.8)') "tf              = ", tf
+        ! write(100,'(a,f16.8)') "Ei              = ", Ei
+        ! write(100,*) ""
         close(100)
     end subroutine rtp_sparse
 

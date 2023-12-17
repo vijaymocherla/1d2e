@@ -1,0 +1,36 @@
+ here ti
+ here
+   1.00000000000000        1.00000000000000        1.00000000000000     
+ 
+     Two-electron DVR    
+ ------------------------
+x0     =      10.00000000
+m      =       1.00000000
+Z      =       2.00000000
+n      =              128
+ndim   =            16384
+dx     =       0.15748031
+ 
+Soft-Coulomb Parameters:
+alpha  =       1.00000000
+beta   =       1.00000000
+ 
+ Generating Hamiltonian Matrix......
+ 
+ Completed generating Hamiltonian Matrix!
+ 
+     Initial wavefxn ansatz    
+ ------------------------------
+zeta            =       1.00000000
+delta_x1        =       1.00000000
+delta_x2        =       1.00000000
+ 
+ 
+         Real time propagation         
+ --------------------------------------
+ n       =          128
+ dt      =   1.000000000000000E-003
+ ti      =   0.000000000000000E+000
+ tf      =    50.0000000000000     
+ 
+ Propagating the wavefunction......
