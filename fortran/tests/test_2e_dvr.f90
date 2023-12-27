@@ -80,40 +80,40 @@ program main
     end do
     
 
-   ! Allocating arrays
-   allocate(hamiltonian(ndim, ndim))
-   allocate(evals(ndim))
-   allocate(evecs(ndim, ndim))
-   allocate(psi(ndim))
+    ! Allocating arrays
+    allocate(hamiltonian(ndim, ndim))
+    allocate(evals(ndim))
+    allocate(evecs(ndim, ndim))
+    allocate(psi(ndim))
     allocate(psi0(ndim))
 
-   hamiltonian = 0.0d0
-   print*, "Generating Hamiltonian Matrix......"
-   print*, "" 
-   do i=1,ndim
-       hamiltonian(i,i) = te_sw_hamiltonian(i,i)
-       do j=i+1,ndim
-           hamiltonian(i,j) = te_sw_hamiltonian(i,j)
-           hamiltonian(j,i) = hamiltonian(i,j)
-       end do
-   end do
+    hamiltonian = 0.0d0
+    print*, "Generating Hamiltonian Matrix......"
+    print*, "" 
+    do i=1,ndim
+        hamiltonian(i,i) = te_sw_hamiltonian(i,i)
+        do j=i+1,ndim
+            hamiltonian(i,j) = te_sw_hamiltonian(i,j)
+            hamiltonian(j,i) = hamiltonian(i,j)
+        end do
+    end do
    
-   print*, "Diagonalising the Hamiltonian......"
-   print*, "" 
-   ! diagonalising hamiltonian
-   call eigsh(hamiltonian, evals, evecs)
-   print*, "Completed Diagonalisation!"
-   print*, "Ground state Energy: ", evals(1)
-   print*,""
-   open(100, file='evals.txt')
-   do i=1,ndim
-       write(100,*) evals(i)
-   end do
-   close(100)
-   open(100, file='evec01.txt')
-   do i=1,ndim
-       write(100,*) evecs(i,1)
-   end do
+    print*, "Diagonalising the Hamiltonian......"
+    print*, "" 
+    ! diagonalising hamiltonian
+    call eigsh(hamiltonian, evals, evecs)
+    print*, "Completed Diagonalisation!"
+    print*, "Ground state Energy: ", evals(1)
+    print*,""
+    open(100, file='evals.txt')
+    do i=1,ndim
+        write(100,*) evals(i)
+    end do
+    close(100)
+    open(100, file='evec01.txt')
+    do i=1,ndim
+        write(100,*) evecs(i,1)
+    end do
 
     
     print*, "Using Imaginary time propagation (ITP) to get ground state......"
