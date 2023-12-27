@@ -7,7 +7,9 @@ module helpers
     private
 
     public zexp_array, dexp_array, omp_zaxpy, &
-           omp_normalize, omp_daxpy, omp_dotprod
+           omp_normalize, omp_daxpy, omp_dotprod, &
+           read_wfn, write_wfn
+
     contains
 
     ! Returns expm(1j*alpha*x)
@@ -120,5 +122,30 @@ module helpers
     !     psi = inv_norm * psi
     ! end subroutine normalize    
 
+    subroutine read_wfn(file_unit, comment, wfn_array)
+        integer, intent(in) :: file_unit
+        character (len=128), intent(out) :: comment
+        complex(dp), allocatable, intent(out) :: wfn_array(:)
+        integer :: i,n
+        read(file_unit,*) n
+        allocate(wfn_array(n))
+        read(file_unit,*) comment ! reading the comment line
+        do i=1,n
+            read(file_unit,*) wfn_array(i)
+        end do
+    end subroutine read_wfn
+
+    subroutine write_wfn(file_unit, comment, wfn_array)
+        integer, intent(in) :: file_unit
+        character (len=128), intent(in) :: comment
+        complex(dp), allocatable, intent(in) :: wfn_array(:)
+        integer :: n, i
+        n = size(wfn_array)
+        write(file_unit,*) n
+        write(file_unit,*) comment
+        do i=1,n
+            write(file_unit,*) wfn_array(i)
+        end do
+    end subroutine write_wfn
 
 end module helpers

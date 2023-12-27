@@ -1,7 +1,7 @@
 module real_tprop
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use blas_wrappers, only: csr_zmul_mv, zmul_zdotc, dmul_ddot
-    use helpers, only: omp_normalize, omp_zaxpy, omp_dotprod
+    use helpers, only: omp_normalize, omp_zaxpy, omp_dotprod, write_wfn
     use two_electron_dvr
     implicit none
 
@@ -57,6 +57,7 @@ module real_tprop
         complex(dp), allocatable, dimension(:) :: k1, k2, k3, k4 
         complex(dp) :: const ! constant for zaxpy operations
         character (len=32) :: wfn_filename
+        character (len=128):: comment
         integer :: ndim, i, k
         ! allocating arrays
         ndim = size(psi0)
@@ -95,10 +96,9 @@ module real_tprop
 
                 write(100,'(4f32.16)') t, norm, autocorr, Ei 
                 write(wfn_filename,'(1a3,1i3.3,1a4)') 'rtp',k,'.wfn'
+                write(comment, fmt='(a,f16.8)') "! RTP Wavefunction at t=", t
                 open(200, file=trim(wfn_filename))
-                    do i=1,ndim
-                        write(200,*) psi_i(i) 
-                    end do    
+                    call write_wfn(200, comment, psi_i)
                 close(200)
                 k = k + 1
             end if

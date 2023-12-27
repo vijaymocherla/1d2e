@@ -1,14 +1,14 @@
-! ifort -c exact_2e_dvr.f90 -qopenmp 
 module two_electron_dvr
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use omp_lib
 
     implicit none
 
-    private :: oe_kinetic, oe_sc_single_well, oe_sc_multi_well, &
-               te_kinetic, te_sw_potential, te_mw_potential
+    private
 
-    public  :: oe_ho_hamiltonian, oe_scsw_hamiltonian, oe_scmw_hamiltonian, & 
+    public  :: print_te_dvr, oe_kinetic, oe_sc_single_well, oe_sc_multi_well, & 
+               te_kinetic, te_sw_potential, te_mw_potential, &  
+               oe_ho_hamiltonian, oe_scsw_hamiltonian, oe_scmw_hamiltonian, & 
                te_sw_hamiltonian, te_mw_hamiltonian, &
                sparse_te_sw_hamiltonian!, sparse_te_mw_hamiltonian
 
@@ -228,6 +228,22 @@ module two_electron_dvr
         
     end subroutine sparse_te_sw_hamiltonian
 
+    subroutine print_te_dvr(file_unit)
+        integer, intent(in) :: file_unit 
+        write(file_unit, *) ""
+        write(file_unit, *) "    Two-Electron DVR    "
+        write(file_unit, *) "------------------------"
+        write(file_unit,'(a,f16.8)') " x0     = ", x0
+        write(file_unit,'(a,f16.8)') " m      = ", m
+        write(file_unit,'(a,f16.8)') " Z      = ", z
+        write(file_unit,'(a,i16)')   " n      = ", n
+        write(file_unit,'(a,f16.8)') " dx     = ", dx
+        write(file_unit, *) "" 
+        write(file_unit,'(a)') "Soft-Coulomb Parameters:"
+        write(file_unit,'(a,f16.8)') " alpha  = ", alpha
+        write(file_unit, '(a,f16.8)')" beta   = ", beta
+        write(file_unit, *) "" 
+    end subroutine print_te_dvr
     
 end module two_electron_dvr
 

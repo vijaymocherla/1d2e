@@ -8,6 +8,7 @@ program main
     use lapack_wrappers, only:eigsh
     use blas_wrappers
     use real_tprop
+    use helpers, only: write_wfn
 
     implicit none
     complex(dp), allocatable, target :: h_array(:)
@@ -29,6 +30,7 @@ program main
     character (len=32) :: arg    !
     character (len=32) :: input_file
     character (len=32) :: output_file
+    character (len=128):: comment
 
     namelist /inp_rtp/ n, x0, z, alpha, beta, &
                           multi_well_switch, te_swtich, & 
@@ -64,9 +66,39 @@ program main
         else if (trim(arg)=="-o") then
             call get_command_argument(ci+1,arg)
             read(arg, '(a32)') output_file
-            ci = ci + 2
+            ci = ci + 2            
         else
-            exit
+            if (trim(arg)=="-n") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(i32)') n
+                ci = ci + 2
+            else if (trim(arg)=="-alpha") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') alpha
+                ci = ci + 2
+            else if (trim(arg)=="-beta") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') beta
+                ci = ci + 2
+            else if (trim(arg)=="-dt") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') dt
+                ci = ci + 2    
+            else if (trim(arg)=="-ti") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') ti
+                ci = ci + 2    
+            else if (trim(arg)=="-tf") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') tf
+                ci = ci + 2    
+            else if (trim(arg)=="-print_nstep") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(i32)') print_nstep
+                ci = ci + 2
+            else
+                exit
+            end if
         end if        
     end do
     
@@ -147,9 +179,9 @@ program main
     write(200,*) ""
     write(200,*) "Completed Real-time propagation!"
     write(200,*) ""
+    ! writing final wavefxn to txt file
     open(100, file='final.wfn')
-    do i=1,ndim
-        write(100,*) psi0(i)
-    end do
+    comment="! RTP Final Wave function"
+    call write_wfn(100, comment, psi0)
     close(100)
 end program main
