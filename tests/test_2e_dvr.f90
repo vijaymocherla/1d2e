@@ -26,6 +26,7 @@ program main
     beta  = 1.00d0               ! e- correlation parameter
     etol = 0.000000001           ! energy absolute tolerance 
     dt  = 0.001d0
+    z = 2.0d0                    ! atomic number   
     print_nstep = 100
     print_nevecs = 20            ! print first n eigen-vectors
     do 
@@ -33,6 +34,14 @@ program main
         if (trim(arg)=="-n") then
             call get_command_argument(ci+1,arg)
             read(arg, '(i32)') n
+            ci = ci + 2
+        else if (trim(arg)=="-x0") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') x0
+            ci = ci + 2
+        else if (trim(arg)=="-z") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') z
             ci = ci + 2
         else if (trim(arg)=="-alpha") then
             call get_command_argument(ci+1,arg)
@@ -46,6 +55,10 @@ program main
             call get_command_argument(ci+1,arg)
             read(arg, '(f32.16)') dt
             ci = ci + 2    
+        else if (trim(arg)=="-etol") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') etol
+            ci = ci + 2    
         else if (trim(arg)=="-print_nstep") then
             call get_command_argument(ci+1,arg)
             read(arg, '(i32)') print_nstep
@@ -56,7 +69,6 @@ program main
     end do
     
     ! setting parameters for grids and calculations
-    z = 2.0d0
     m = 1.0d0                    ! mass of the electron
     ndim = n**2                  ! size of 2e- direct product space
     dx = 2.0d0*x0 / real(n-1,8)    ! grid-spacing
