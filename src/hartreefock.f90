@@ -156,7 +156,17 @@ module hartreefock
         write(100,*) "----------------------------------------------------------" 
         write(100,*) " "
         if (convergence) then
-            write(100,*) "SCF converged! Final Ground-State Energy (Eh): ", Ei
+            write(100,*) ""
+            write(100,*) ""
+            write(100,*) "---------------------------------------"
+            write(100,*) "    Molecular Orbital Energies (Eh)    "
+            write(100,*) "---------------------------------------"
+            do i=1,n
+                write(100,'(i8,f16.8)') i, epsilon(i)
+            end do
+            write(100,*) "---------------------------------------"
+            write(100,*) ""
+            write(100,'(a,f32.16)') "SCF converged! Final Ground-State Energy (Eh): ", Ei
         else 
             write(100,*) "!!! ERROR: SCF did NOT converge, maximum no. of iterations exceeded." 
         end if

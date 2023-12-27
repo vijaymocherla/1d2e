@@ -41,6 +41,10 @@ program main
             call get_command_argument(ci+1,arg)
             read(arg, '(f32.16)') z
             ci = ci + 2
+        else if (trim(arg)=="-damping_factor") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') damping_factor
+            ci = ci + 2
         else if (trim(arg)=="-alpha") then
             call get_command_argument(ci+1,arg)
             read(arg, '(f32.16)') alpha
@@ -61,7 +65,7 @@ program main
             exit
         end if        
     end do
-    
+    print*, z
     ! setting parameters for grids and calculations
     m = 1.0d0                    ! mass of the electron
     dx = 2.0d0*x0 / real(n-1,8)  ! grid-spacing

@@ -1,7 +1,7 @@
 program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use intracules
-    use helpers, only: read_wfn, write_wfn
+    use helpers, only: read_wfn, write_wfn, write_intracule
     implicit none
     
     complex(dp), allocatable, dimension(:) :: wfn
@@ -14,14 +14,19 @@ program main
     integer :: ci
     character (len=128) :: arg 
     
-    wfn_file='test.wfn'
-    out_file = 'wigner_test.txt'
+    wfn_file='psi.wfn'
+    out_file = 'wigner_intracule.wfn'
     ci = 1
+    x0 = 15.0d0
     do 
         call get_command_argument(ci, arg)
         if (trim(arg)=="-i") then
             call get_command_argument(ci+1,arg)
             read(arg, '(a128)') wfn_file
+            ci = ci + 2
+        else if (trim(arg)=="-x0") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') x0
             ci = ci + 2
         else if (trim(arg)=="-o") then
             call get_command_argument(ci+1,arg)
@@ -35,15 +40,9 @@ program main
     open(100,file=trim(wfn_file))
     call read_wfn(100, comment, wfn)
     close(100)
-    x0 = 10.0d0
     call comp_wigner_intracule(wfn, x0, wigner_intracule)
     open(300, file=trim(out_file))
-    m = size(wigner_intracule)
-    write(300,*) m
-    write(300,*) trim(comment)
-    do i=1,m
-            write(300,*) wigner_intracule(i)
-        end do
+    call write_intracule(300, comment, wigner_intracule)
     close(300)
     
 end program main

@@ -8,7 +8,7 @@ module helpers
 
     public zexp_array, dexp_array, omp_zaxpy, &
            omp_normalize, omp_daxpy, omp_dotprod, &
-           read_wfn, write_wfn
+           read_wfn, write_wfn, write_intracule
 
     contains
 
@@ -147,5 +147,18 @@ module helpers
             write(file_unit,*) wfn_array(i)
         end do
     end subroutine write_wfn
+
+    subroutine write_intracule(file_unit, comment, intracule_array)
+        integer, intent(in) :: file_unit
+        character (len=128), intent(in) :: comment
+        real(dp), allocatable, intent(in) :: intracule_array(:)
+        integer :: n, i
+        n = size(intracule_array)
+        write(file_unit,*) n
+        write(file_unit,*) comment
+        do i=1,n
+            write(file_unit,*) intracule_array(i)
+        end do
+    end subroutine write_intracule
 
 end module helpers
