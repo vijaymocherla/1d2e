@@ -51,3 +51,12 @@ add_executable(test_sparse_rtp
             test_sparse_rtp.f90
 )               
 
+add_executable(test_intracules
+            ${tests}
+            test_intracules.f90
+)               
+
+add_executable(test_hartreefock
+            ${tests}
+            test_hartreefock.f90
+)   
