@@ -171,8 +171,8 @@ module imag_tprop
         write(100,'(a,i16)')   "n       = ", n
         write(100,'(a,f16.8)') "dt      = ", dt
         write(100,'(a,i16)')   "nstep   = ", tstep
-        write(100,'(a,f16.8)') "E_conv  = ", etol
-        write(100,'(a,f16.8)') "Ei      = ", Ei
+        write(100,'(a,f20.16)') "E_conv  = ", etol
+        write(100,'(a,f32.16)') "Ei      = ", Ei
         write(100,*) ""
         close(100)
     end subroutine itp_on_the_fly
@@ -226,6 +226,7 @@ module imag_tprop
         write(100,*) ""
         ! writing headers
         write(100,'(4a32)') 'Imag. time (a.u.)', '< psi_i | psi_i >', '< psi_i | psi_0 >', 'Energy (hartree)'
+        write(100,'(4a32)') " "
         do 
             ! print output to itp.out
             if (modulo(tstep, print_nstep) == 0) then
@@ -286,8 +287,8 @@ module imag_tprop
         write(100,'(a,i16)')   "n       = ", n
         write(100,'(a,f16.8)') "dt      = ", dt
         write(100,'(a,i16)')   "nstep   = ", tstep
-        write(100,'(a,f16.8)') "E_conv  = ", etol
-        write(100,'(a,f16.8)') "Ei      = ", Ei
+        write(100,'(a,f20.16)') "E_conv  = ", etol
+        write(100,'(a,f24.16)') "Ei      = ", Ei
         write(100,*) ""
         close(100)
     end subroutine itp_sparse

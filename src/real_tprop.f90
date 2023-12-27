@@ -130,17 +130,21 @@ module real_tprop
             tstep = tstep + 1
             
         end do 
-        psi0 = psi_i   
-        ! write(100,*) ""
-        ! write(100,*) "   Summary of Real time propagation   "
-        ! write(100,*) "--------------------------------------"
-        ! write(100,'(a,i16)')   "n               = ", n
-        ! write(100,'(a,i16)')   "print_nstep     = ", print_nstep
-        ! write(100,'(a,f16.8)') "dt              = ", dt
-        ! write(100,'(a,f16.8)') "ti              = ", ti
-        ! write(100,'(a,f16.8)') "tf              = ", tf
-        ! write(100,'(a,f16.8)') "Ei              = ", Ei
-        ! write(100,*) ""
+        psi0 = psi_i
+        ! deallocating arrays
+        deallocate(psi_i)
+        deallocate(k1,k2,k3,k4,kt)  
+        ! printing real_tprop summary 
+        write(100,*) ""
+        write(100,*) "   Summary of Real time propagation   "
+        write(100,*) "--------------------------------------"
+        write(100,'(a,i16)')   "n               = ", n
+        write(100,'(a,i16)')   "print_nstep     = ", print_nstep
+        write(100,'(a,f16.8)') "dt              = ", dt
+        write(100,'(a,f16.8)') "ti              = ", ti
+        write(100,'(a,f16.8)') "tf              = ", tf
+        write(100,'(a,f24.16)') "Ei              = ", Ei
+        write(100,*) ""
         close(100)
     end subroutine rtp_sparse
 
