@@ -6,6 +6,7 @@ program main
     use two_electron_dvr
     use lapack_wrappers, only:eigsh
     use imag_tprop
+    use helpers, only:write_wfn
 
     implicit none
     real(dp), allocatable :: h_array(:) 
