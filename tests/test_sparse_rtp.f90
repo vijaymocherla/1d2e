@@ -38,8 +38,8 @@ program main
                           ti, tf, dt, print_nstep 
         
     ! Default input parameters
-    n = 64                       ! size of 1e- grids
-    x0 = 10.0d0                  ! extent of 1d box
+    n = 32                       ! size of 1e- grids
+    x0 = 15.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
     beta  = 1.00d0               ! e- correlation parameter
     ti = 0.0d0                   ! initial time 
@@ -63,6 +63,14 @@ program main
             call get_command_argument(ci+1,arg)
             read(arg, '(a32)') input_file
             ci = ci + 2
+            ! reading input parameters
+            open(100, file=trim(input_file))
+            read(100, nml=inp_rtp, iostat=rc)
+            if (rc /= 0) then
+                print*, '!! I/O ERROR: Can not read input file. IOSTAT=',rc
+                stop
+            end if
+            close(100)
         else if (trim(arg)=="-o") then
             call get_command_argument(ci+1,arg)
             read(arg, '(a32)') output_file
@@ -71,6 +79,14 @@ program main
             if (trim(arg)=="-n") then
                 call get_command_argument(ci+1,arg)
                 read(arg, '(i32)') n
+                ci = ci + 2
+            else if (trim(arg)=="-x0") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') x0
+                ci = ci + 2
+            else if (trim(arg)=="-z") then
+                call get_command_argument(ci+1,arg)
+                read(arg, '(f32.16)') z
                 ci = ci + 2
             else if (trim(arg)=="-alpha") then
                 call get_command_argument(ci+1,arg)
@@ -102,14 +118,6 @@ program main
         end if        
     end do
     
-    ! reading input parameters
-    open(100, file=trim(input_file))
-        read(100, nml=inp_rtp, iostat=rc)
-        if (rc /= 0) then
-            print*, '!! I/O ERROR: Can not read input file. IOSTAT=',rc
-            stop
-        end if
-    close(100)
         
     ndim = n**2                  ! size of 2e- direct product space
     dx = 2.0d0*x0 / real(n-1,8)  ! grid-spacing

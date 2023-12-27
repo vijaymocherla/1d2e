@@ -23,18 +23,28 @@ program main
 
     ci = 1
     ! Reading input parameters
-    n = 64                       ! size of 1e- grids
-    x0 = 10.0d0                  ! extent of 1d box
+    n = 32                       ! size of 1e- grids
+    x0 = 15.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
     beta  = 1.00d0               ! e- correlation parameter
     etol = 0.000000001           ! energy absolute tolerance 
     dt  = 0.001d0
     print_nstep = 100
+    z = 2.0d0
+    
     do 
         call get_command_argument(ci, arg)
         if (trim(arg)=="-n") then
             call get_command_argument(ci+1,arg)
             read(arg, '(i32)') n
+            ci = ci + 2
+        else if (trim(arg)=="-x0") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') x0
+            ci = ci + 2
+        else if (trim(arg)=="-z") then
+            call get_command_argument(ci+1,arg)
+            read(arg, '(f32.16)') z
             ci = ci + 2
         else if (trim(arg)=="-alpha") then
             call get_command_argument(ci+1,arg)
@@ -62,7 +72,6 @@ program main
     end do
     
     ! setting parameters for grids and calculations
-    z = 2.0d0
     m = 1.0d0                    ! mass of the electron
     ndim = n**2                  ! size of 2e- direct product space
     dx = 2.0d0*x0 / real(n-1,8)    ! grid-spacing
