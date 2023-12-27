@@ -12,12 +12,14 @@ program main
     integer,  allocatable :: h_row(:)
     integer,  allocatable :: h_col(:)
     real(dp), allocatable :: psi0(:)
+    complex(dp), allocatable :: psi(:)
     integer  :: i, k, tstep, print_nstep, ndim, nsparse
     real(dp) :: dt
     real(dp) :: etol, Ei
     integer  :: ci
     character (len=32) :: arg
-    
+    character (len=128) :: comment
+
     ci = 1
     ! Reading input parameters
     n = 64                       ! size of 1e- grids
@@ -104,12 +106,13 @@ program main
     print*, "Using Imaginary time propagation (ITP) to get ground state......"
 
     call gen_trial_state(psi0)
-
+    allocate(psi(ndim))
     call itp_sparse(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
-    open(100, file='psi_itp.out')
-    do i=1,ndim
-        write(100,*) psi0(i)
-    end do
+    comment = "! imag_tprop final wavefunction"
+    psi = cmplx(psi0, 0.0d0, kind=dp)
+    deallocate(psi0)
+    open(100, file='psi_itp.wfn')
+        call write_wfn(100, comment, psi)
     close(100)
     print*, ""
     print*, "Completed Imaginary time propagation (ITP)."

@@ -3,17 +3,20 @@ program main
     use two_electron_dvr
     use lapack_wrappers, only:eigsh
     use imag_tprop
+    use helpers, only: write_wfn
 
     implicit none
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)
-    real(dp), allocatable :: psi(:)
+    complex(dp), allocatable :: psi(:)
     real(dp), allocatable :: psi0(:)
     integer :: i,j, tstep, print_nstep, ndim
+    integer :: print_nevecs
     real(dp) :: dt
-    real(dp) :: norm, etol, Ei
+    real(dp) :: etol, Ei
     integer :: ci
     character (len=32) :: arg
+    character (len=128) :: comment
     
     ci = 1
     ! Reading input parameters
@@ -24,6 +27,7 @@ program main
     etol = 0.000000001           ! energy absolute tolerance 
     dt  = 0.001d0
     print_nstep = 100
+    print_nevecs = 20            ! print first n eigen-vectors
     do 
         call get_command_argument(ci, arg)
         if (trim(arg)=="-n") then
@@ -84,9 +88,9 @@ program main
     allocate(hamiltonian(ndim, ndim))
     allocate(evals(ndim))
     allocate(evecs(ndim, ndim))
-    allocate(psi(ndim))
     allocate(psi0(ndim))
-
+    allocate(psi(ndim))
+    
     hamiltonian = 0.0d0
     print*, "Generating Hamiltonian Matrix......"
     print*, "" 
@@ -110,9 +114,9 @@ program main
         write(100,*) evals(i)
     end do
     close(100)
-    open(100, file='evec01.txt')
+    open(100, file='evecs.txt')
     do i=1,ndim
-        write(100,*) evecs(i,1)
+        write(100,*) evecs(i,1:print_nevecs)
     end do
 
     
@@ -120,10 +124,11 @@ program main
 
     call gen_trial_state(psi0)   
     call itp_on_the_fly(psi0, dt, print_nstep, etol, Ei, tstep)
-    open(100, file='psi_itp.out')
-    do i=1,ndim
-        write(100,*) psi0(i)
-    end do
+    comment = "! imag_tprop final wavefunction"
+    psi = cmplx(psi0, 0.0d0, kind=dp)
+    deallocate(psi0)
+    open(100, file='psi_itp.wfn')
+        call write_wfn(100, comment, psi)
     close(100)
     print*, ""
     print*, "Completed Imaginary time propagation (ITP)."
