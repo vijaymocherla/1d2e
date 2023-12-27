@@ -65,7 +65,6 @@ program main
             exit
         end if        
     end do
-    print*, z
     ! setting parameters for grids and calculations
     m = 1.0d0                    ! mass of the electron
     dx = 2.0d0*x0 / real(n-1,8)  ! grid-spacing

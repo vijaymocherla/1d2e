@@ -34,14 +34,21 @@ for z in ${atom_nos[@]};do
             for n in ${small_n[@]};do
                 mkdir "n_"$n;
                 cd "n_"$n;
-                echo "Running Hartree-Fock"
-                $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta
-                echo "Running On-the-fly ITP"                
-                $source/test_2e_dvr -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $long_tstep -etol $etol -print_nstep $print_nstep
-                echo "Running Sparse-ITP"
-                $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $long_tstep -etol $etol -print_nstep $print_nstep
-                echo "Computing the Wigner Intracule"
-                $source/test_intracules -i psi_itp.wfn -x0 $x0 -o wigner_intracule.wfn
+                echo "Running Hartree-Fock" >> run.log
+                $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta &> scf.log
+                echo $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta &> scf.log
+
+                echo "Running On-the-fly ITP" >> run.log                
+                $source/test_2e_dvr -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $long_tstep -etol $etol -print_nstep $print_nstep &> otf_itp.log
+                echo $source/test_2e_dvr -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $long_tstep -etol $etol -print_nstep $print_nstep &> otf_itp.log
+
+                echo "Running Sparse-ITP" >> run.log
+                $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $long_tstep -etol $etol -print_nstep $print_nstep &> sparse_itp.log
+                echo $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $long_tstep -etol $etol -print_nstep $print_nstep &> sparse_itp.log
+
+                echo "Computing the Wigner Intracule" >> run.log
+                $source/test_intracules -i psi_itp.wfn -x0 $x0 -o wigner_intracule.wfn &> intracules.log
+                echo $source/test_intracules -i psi_itp.wfn -x0 $x0 -o wigner_intracule.wfn &> intracules.log
                 cd ..
             done
             cd ..
