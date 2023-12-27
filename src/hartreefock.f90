@@ -11,7 +11,7 @@ module hartreefock
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use omp_lib
     use lapack_wrappers, only:eigsh
-    use blas_wrappers, only:dmul_mnmt, dmul_mm
+    use blas_wrappers, only: dmul_mm
     use two_electron_dvr, only: print_te_dvr
     implicit none
 
