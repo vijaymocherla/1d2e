@@ -73,18 +73,18 @@ module hartreefock
         Ei = en
     end subroutine calc_energy
     
-    subroutine scf_cycle(h_core, v_ee, etol, maxiter, Ei, mo_coeff, epsilon)
+    subroutine scf_cycle(h_core, v_ee, etol, maxiter, Ei, mo_coeff, epsilon, p)
         implicit none
         real(dp), allocatable, intent(in) :: h_core(:,:)
         real(dp), allocatable, intent(in) :: v_ee(:,:)
         real(dp), allocatable, intent(inout) :: mo_coeff(:,:)
         real(dp), allocatable, intent(inout) :: epsilon(:)
         real(dp), intent(inout) :: Ei
+        real(dp), allocatable, intent(inout) :: p(:,:)
         real(dp), intent(in) :: etol
         integer,  intent(in) :: maxiter
 
         real(dp), allocatable :: g(:,:)
-        real(dp), allocatable :: p(:,:)
         real(dp), allocatable :: p_tmp(:,:), p_new(:,:)
         real(dp), allocatable :: f(:,:)
         real(dp), allocatable :: occ(:,:)
@@ -155,7 +155,7 @@ module hartreefock
                 p = p_new
             end if
         end do
-        deallocate(g, p, p_tmp, p_new, occ)
+        deallocate(g, p_tmp, p_new, occ)
         write(100,*) "----------------------------------------------------------" 
         write(100,*) " "
         if (convergence) then

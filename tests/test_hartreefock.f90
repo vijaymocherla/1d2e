@@ -9,6 +9,7 @@ program main
     real(dp), allocatable :: v_ee(:,:)  
     real(dp), allocatable :: epsilon(:)
     real(dp), allocatable :: mo_coeff(:,:)
+    real(dp), allocatable :: p(:,:)
     integer :: i, j, print_nstep
     integer :: maxiter
     real(dp) :: etol, Ei
@@ -114,9 +115,15 @@ program main
     end do
     print*, "Running SCF........"
     ! run scf
-    call scf_cycle(h_core, v_ee, etol, maxiter, Ei, mo_coeff, epsilon)
+    call scf_cycle(h_core, v_ee, etol, maxiter, Ei, mo_coeff, epsilon, p)
     print*, "Completed running SCF!!!"
-    
+    print*, " "
+    print*, "Saving density to 'scf_density.txt'"
+    open(100, file='scf_density.txt')
+    do i=1,n 
+        write(100,*) p(i,:)
+    end do
+    close(100)
 
 
 end program main
