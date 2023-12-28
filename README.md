@@ -33,11 +33,12 @@ Run calculations/tests using executables in `build/tests/`.
 `tests/` contains:
 
 - `test_1e_dvr.f90` is a test for 1e- single well calculation.
-- `test_2e_dvr.f90` is a test for exact 2e- DVR with imaginary time propagation. 
+- `test_2e_dvr.f90` is a test for 2e- DVR calculations using exact diagonalization. 
 - `test_ho_dvr.f90` is a test for subroutines in `integrators` using quantum harmonic oscillator problem.  
 - `test_matmul.f90` is a test for the wrapper subroutines in `blas_wrappers.f90`.
 - `test_hartreefock.f90` is a test for hartree-fock 2e- DVR calculation.
 - `test_intracules.f90` is a test that computes intracules for given wavefunction.
 - `test_sparse_blas.f90` is test for sparse BLAS routines used in the modules `imag_tprop` and `real_tprop`.
-- `test_sparse_itp.f90` is test for imaginary-time propagation using sparse routine `itp_sparse` in module `imag_tprop`.
+- `test_otf_itp.f90` is test for imaginary-time propagation using the on-the-fly routine `itp_sparse` in module `imag_tprop`.
+- `test_sparse_itp.f90` is test for imaginary-time propagation using sparse routine `itp_on_the_fly` in module `imag_tprop`.
 - `test_sparse_rtp.f90` is test for real-time propagation using sparse routine `rtp_sparse` in module `real_tprop`.

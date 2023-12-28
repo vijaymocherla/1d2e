@@ -15,7 +15,7 @@ program main
     real(dp) :: etol, Ei, atol
     integer :: ci
     character (len=32) :: arg
-    
+    character (len=128):: comment
     ci = 1
     ! Reading input parameters
     n = 8                        ! size of 1e- grids
@@ -27,7 +27,7 @@ program main
     n_el = 2                     ! no. of electrons
     damping_factor = 0.0d0       ! damping factor  
     z = 2.0d0
-    atol = 1e-8
+    atol = 1e-12
 
     do 
         call get_command_argument(ci, arg)
@@ -121,14 +121,29 @@ program main
     print*, " "
     print*, "Saving density to 'scf_density.txt'"
     open(100, file='scf_density.txt')
+    comment = "! SCF ground state density matrix"
+    write(100,*) n
+    write(100,"(a)") comment
     do j=1,n
         do i=1,n 
             if (p(i,j)> atol) then
-                write(100,*) i, j, p(i,j)
+                write(100,'(2i8,1f32.16)') i, j, p(i,j)
             end if
         end do
     end do
     close(100)
-
+    print*, "Saving MO coefficients to 'scf_mo_coeff.txt'"
+    open(100, file='scf_mo_coeff.txt')
+    comment = "! SCF MO coefficient matrix"
+    write(100,*) n
+    write(100,"(a)") comment
+    do j=1,n
+        do i=1,n 
+            if (mo_coeff(i,j)> atol) then
+                write(100,'(2i8,1f32.16)') i, j, mo_coeff(i,j)
+            end if
+        end do
+    end do
+    close(100)
 
 end program main

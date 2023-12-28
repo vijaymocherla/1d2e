@@ -96,8 +96,8 @@ module hartreefock
         open(100, file='scf_cycle.out')
         call print_te_dvr(100)
         write(100, *) ""
-        write(100, *) "       Hartree-Fock       "
-        write(100, *) "--------------------------"
+        write(100, *) "                      Hartree-Fock                      "
+        write(100, *) "--------------------------------------------------------"
         write(100,'(a,i16)') " no. of orbitals        = ", n
         write(100,'(a,i16)') " no. of electrons       = ", n_el
         write(100,'(a,l8)')  " scf_damping_switch     = ", scf_damping_switch
@@ -115,9 +115,10 @@ module hartreefock
         do i=1,n_el/2
             occ(i,i) = 2.0d0
         end do
+        
+        write(100,*) ""
         write(100,*) "                      SCF iterations                      "
         write(100,*) "----------------------------------------------------------" 
-        write(100,*) ""
         write(100,'(a8,a20,a20)') "S.No", "Energy (hartree)", "dE (hartree)"
         write(100,*) "----------------------------------------------------------" 
         Ei = 0.0d0
@@ -127,7 +128,19 @@ module hartreefock
         p_new = 0.0d0
         p_tmp = 0.0d0
         convergence = .false.
-        E0 = 1.0d0
+        
+        ! Generating guess density
+        E0 = 0.0d0
+        call comp_two_electron_integral(v_ee, p, g)
+        f = h_core + g
+        ! diagonalizing the fock-matrix
+        call eigsh(f, epsilon, mo_coeff)
+        ! calculating the new density
+        call dmul_mm(occ, transpose(mo_coeff),p_tmp)
+        call dmul_mm(mo_coeff, p_tmp, p)
+        call calc_energy(h_core, f, p, E0)
+        write(100,'(i8,f20.12)') 0, E0 
+
         ! SCF iteration cycle
         do i=1,maxiter
             ! compute the two-electron term for the new density
@@ -135,14 +148,14 @@ module hartreefock
             f = h_core + g
             ! calculate energy
             call calc_energy(h_core, f, p, Ei)
-            write(100,'(i8,f20.12,f20.12)') i, Ei, dE 
-            ! check for convergence
             dE = abs(Ei - E0)
-            if (dE < etol) then
+            write(100,'(i8,f20.12,f20.12)') i, Ei, dE 
+            E0  = Ei
+            ! check for convergence
+            if ((dE < etol) .and. (E0 .ne. 0.0d0)) then
                 convergence = .true.
                 exit
             end if
-            E0  = Ei
             ! diagonalizing the fock-matrix
             call eigsh(f, epsilon, mo_coeff)
             ! calculating the new density
@@ -155,6 +168,7 @@ module hartreefock
                 p = p_new
             end if
         end do
+
         deallocate(g, p_tmp, p_new, occ)
         write(100,*) "----------------------------------------------------------" 
         write(100,*) " "
