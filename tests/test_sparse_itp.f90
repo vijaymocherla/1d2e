@@ -98,11 +98,11 @@ program main
         x(i) = -x0 + (i-1)*dx
     end do
     
-    nsparse = 2*ndim**2 - 1
+    nsparse = 2*n - 1
     ! Allocating arrays
-    allocate(h_array(nsparse))
+    allocate(h_array(ndim*nsparse))
+    allocate(h_col(ndim*nsparse))
     allocate(h_row(ndim+1))
-    allocate(h_col(nsparse))
     allocate(psi0(ndim))
 
     h_array = 0.0d0
