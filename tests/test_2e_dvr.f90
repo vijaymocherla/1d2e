@@ -128,7 +128,7 @@ program main
         write(100,*) evals(i)
     end do
     close(100)
-    print('(a,i4,a)'), "Saving first ",print_nevecs,"eigen-vectors to 'evecs.txt'"
+    print('(a,i4,a)'), "Saving first ",print_nevecs," eigen-vectors to 'evecs.txt'"
     print*,""
     open(100, file='evecs.txt')
     do i=1,ndim

@@ -60,3 +60,8 @@ add_executable(test_hartreefock
             ${tests}
             test_hartreefock.f90
 )   
+
+add_executable(test_otf_itp
+            ${tests}
+            test_otf_itp.f90
+)   
