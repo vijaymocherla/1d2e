@@ -16,7 +16,7 @@ program main
     m = 1.0d0                     ! mass of the electron
     n = 100                       ! size of 1e- grids
     ndim = n                      ! size of 2e- direct product space
-    x0 = 10.0                     ! extent of 1d box
+    x0 = 15.0                     ! extent of 1d box
     dx = 2.0d0*x0 / real(n-1,8)   ! grid-spacing
     multi_well_switch = .false.   ! default for single well
     te_swtich = .false.           ! switch to test one-electron hamiltonian 

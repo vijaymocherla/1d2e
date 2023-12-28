@@ -5,29 +5,25 @@ program main
     use helpers, only: write_wfn
 
     implicit none
-    real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
-    real(dp), allocatable :: evals(:)
     complex(dp), allocatable :: psi(:)
     real(dp), allocatable :: psi0(:)
-    integer :: i,j, tstep, print_nstep, ndim
-    integer :: print_nevecs
+    integer  :: i, tstep, print_nstep, ndim
     real(dp) :: dt
     real(dp) :: etol, Ei
-    integer :: ci
+    integer  :: ci
     character (len=32) :: arg
     character (len=128) :: comment
     
     ci = 1
     ! Reading input parameters
     n = 8                        ! size of 1e- grids
-    x0 = 10.0d0                  ! extent of 1d box
+    x0 = 15.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
     beta  = 1.00d0               ! e- correlation parameter
     etol = 0.000000001           ! energy absolute tolerance 
     dt  = 0.001d0
     z = 2.0d0                    ! atomic number   
     print_nstep = 100
-    print_nevecs = 20            ! print first n eigen-vectors
 
     do 
         call get_command_argument(ci, arg)
@@ -103,7 +99,8 @@ program main
     print*, "Using Imaginary time propagation (ITP) to get ground state......"
     call gen_trial_state(psi0)   
     call itp_on_the_fly(psi0, dt, print_nstep, etol, Ei, tstep)
-    comment = "! imag_tprop final wavefunction"
+    comment = "! final wavefunction from on-the-fly imaginary-time propagation"
+    ! converting (real) psi0 to (complex) psi
     psi = cmplx(psi0, 0.0d0, kind=dp)
     deallocate(psi0)
     open(100, file='psi_itp.wfn')

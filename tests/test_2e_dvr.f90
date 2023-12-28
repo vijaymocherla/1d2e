@@ -9,11 +9,8 @@ program main
     real(dp), allocatable :: hamiltonian(:,:), evecs(:,:)  
     real(dp), allocatable :: evals(:)
     complex(dp), allocatable :: psi(:)
-    real(dp), allocatable :: psi0(:)
-    integer :: i,j, tstep, print_nstep, ndim
+    integer :: i,j, ndim
     integer :: print_nevecs
-    real(dp) :: dt
-    real(dp) :: etol, Ei
     integer :: ci
     character (len=32) :: arg
     character (len=128) :: comment
@@ -21,13 +18,10 @@ program main
     ci = 1
     ! Reading input parameters
     n = 8                        ! size of 1e- grids
-    x0 = 10.0d0                  ! extent of 1d box
+    x0 = 15.0d0                  ! extent of 1d box
     alpha = 1.00d0               ! 1e- soft coulomb parameter
     beta  = 1.00d0               ! e- correlation parameter
-    etol = 0.000000001           ! energy absolute tolerance 
-    dt  = 0.001d0
     z = 2.0d0                    ! atomic number   
-    print_nstep = 100
     print_nevecs = 20            ! print first n eigen-vectors
 
     do 
@@ -51,18 +45,6 @@ program main
         else if (trim(arg)=="-beta") then
             call get_command_argument(ci+1,arg)
             read(arg, '(f32.16)') beta
-            ci = ci + 2
-        else if (trim(arg)=="-dt") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') dt
-            ci = ci + 2    
-        else if (trim(arg)=="-etol") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(f32.16)') etol
-            ci = ci + 2    
-        else if (trim(arg)=="-print_nstep") then
-            call get_command_argument(ci+1,arg)
-            read(arg, '(i32)') print_nstep
             ci = ci + 2
         else
             exit
@@ -101,7 +83,6 @@ program main
     allocate(hamiltonian(ndim, ndim))
     allocate(evals(ndim))
     allocate(evecs(ndim, ndim))
-    allocate(psi0(ndim))
     allocate(psi(ndim))
     
     hamiltonian = 0.0d0
@@ -119,6 +100,7 @@ program main
     print*, "" 
     ! diagonalising hamiltonian
     call eigsh(hamiltonian, evals, evecs)
+    deallocate(hamiltonian)
     print*, "Completed Diagonalisation!"
     print*,""
     print*, "Saving all eigen-values to 'evals.txt'"
@@ -134,7 +116,15 @@ program main
     do i=1,ndim
         write(100,*) evecs(i,1:print_nevecs)
     end do
+    close(100)
     print*, "Ground state Energy: ", evals(1)
     print*,""
-
+    ! converting (real) psi0 to (complex) psi
+    psi = cmplx(evecs(:,1), 0.0d0, kind=dp)
+    comment = "! exact ground state wavefunction"
+    open(200, file='psi_exact.wfn')
+    call write_wfn(200, comment, psi)
+    close(200)
+    deallocate(evals, evecs, psi)
+    
 end program main

@@ -5,7 +5,6 @@ program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use two_electron_dvr
     use iso_c_binding
-    use lapack_wrappers, only:eigsh
     use blas_wrappers
     use real_tprop
     use helpers, only: write_wfn
@@ -188,8 +187,8 @@ program main
     write(200,*) "Completed Real-time propagation!"
     write(200,*) ""
     ! writing final wavefxn to txt file
-    open(100, file='final.wfn')
-    comment="! RTP Final Wave function"
+    open(100, file='psi_tf_rtp.wfn')
+    write(comment,'(a,f16.8)') "! final wavefunction from sparse real-time propagation, at tf =",tf
     call write_wfn(100, comment, psi0)
     close(100)
 end program main

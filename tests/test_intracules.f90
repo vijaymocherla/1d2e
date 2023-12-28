@@ -7,7 +7,6 @@ program main
     complex(dp), allocatable, dimension(:) :: wfn
     real(dp), allocatable, dimension(:) :: wigner_intracule
     real(dp) :: x0
-    integer :: i, m
     character (len=128) :: wfn_file
     character (len=128) :: out_file  
     character (len=128) :: comment

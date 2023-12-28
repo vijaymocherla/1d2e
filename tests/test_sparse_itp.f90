@@ -4,7 +4,6 @@
 program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use two_electron_dvr
-    use lapack_wrappers, only:eigsh
     use imag_tprop
     use helpers, only:write_wfn
 
@@ -118,7 +117,7 @@ program main
     call gen_trial_state(psi0)
     allocate(psi(ndim))
     call itp_sparse(h_array, h_row, h_col, psi0, dt, print_nstep, etol, Ei, tstep)
-    comment = "! imag_tprop final wavefunction"
+    comment = "! final wavefunction from sparse imaginary-time propagation"
     psi = cmplx(psi0, 0.0d0, kind=dp)
     deallocate(psi0)
     open(100, file='psi_itp.wfn')
