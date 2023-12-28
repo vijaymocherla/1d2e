@@ -12,7 +12,7 @@ program main
     real(dp), allocatable :: p(:,:)
     integer :: i, j, print_nstep
     integer :: maxiter
-    real(dp) :: etol, Ei
+    real(dp) :: etol, Ei, atol
     integer :: ci
     character (len=32) :: arg
     
@@ -27,6 +27,7 @@ program main
     n_el = 2                     ! no. of electrons
     damping_factor = 0.0d0       ! damping factor  
     z = 2.0d0
+    atol = 1e-8
 
     do 
         call get_command_argument(ci, arg)
@@ -120,8 +121,12 @@ program main
     print*, " "
     print*, "Saving density to 'scf_density.txt'"
     open(100, file='scf_density.txt')
-    do i=1,n 
-        write(100,*) p(i,:)
+    do j=1,n
+        do i=1,n 
+            if (p(i,j)> atol) then
+                write(100,*) i, j, p(i,j)
+            end if
+        end do
     end do
     close(100)
 
