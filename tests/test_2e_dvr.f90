@@ -117,7 +117,7 @@ program main
         write(100,*) evecs(i,1:print_nevecs)
     end do
     close(100)
-    print*, "Ground state Energy: ", evals(1)
+    print*, "Ground state Energy (in Eh) : ", evals(1)
     print*,""
     ! converting (real) psi0 to (complex) psi
     psi = cmplx(evecs(:,1), 0.0d0, kind=dp)

@@ -23,13 +23,14 @@ for a in ${alpha[@]};do
         num_z=$(printf "%.8f\n" "$z")
         for n in ${ngrid[@]};do
             cd "n_"$n;
+            echo "Running Exact Diagonalization calculations in alpha_"$a"_beta_"$b"/n_"$n >> ../../job.log            
             echo "Running Exact Diagonalization" >> run.log
             echo $source/test_2e_dvr -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta >> run.log
             $source/test_2e_dvr -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta &> exact.log
 
             echo "Computing the Wigner Intracule" >> run.log
-            $source/test_intracules -i psi_exact.wfn -x0 $x0 -o wigner_intracule.wfn &> intracules.log
-            echo $source/test_intracules -i psi_exact.wfn -x0 $x0 -o wigner_intracule.wfn &> intracules.log
+            $source/test_intracules -i psi_exact.wfn -x0 $x0 -o exact_wigner_intracule.wfn &> intracules.log
+            echo $source/test_intracules -i psi_exact.wfn -x0 $x0 -o exact_wigner_intracule.wfn &> intracules.log
             cd ..
         done
         cd ..

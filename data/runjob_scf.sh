@@ -13,9 +13,8 @@ echo "No. of threads being used: "$OMP_NUM_THREADS >> job.log
 
 # DVR grid parameters
 x0="15.0"
-ngrid1=(32 64 128 256 512 1024)
-ngrid2=(2048 4096 8192)
-ngrid=$ngrid1
+ngrid=(32 64 128 256 512 1024)
+# ngrid2=(2048 4096 8192)
 
 for a in ${alpha[@]};do
     for b in ${beta[@]};do
@@ -25,6 +24,7 @@ for a in ${alpha[@]};do
         num_z=$(printf "%.8f\n" "$z")
         for n in ${ngrid[@]};do
             cd "n_"$n;
+            echo "Running SCF calculations in alpha_"$a"_beta_"$b"/n_"$n >> ../../job.log
             echo "Running Hartree-Fock" >> run.log
             echo $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta >> run.log
             $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta &> scf.log

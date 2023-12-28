@@ -98,11 +98,14 @@ module hartreefock
         write(100, *) ""
         write(100, *) "       Hartree-Fock       "
         write(100, *) "--------------------------"
-        write(100,'(a,i16)') " no. of orbitals      = ", n
-        write(100,'(a,i16)') " no. of electrons     = ", n_el
-        write(100,'(a,l8)')  " scf_damping_switch   = ", scf_damping_switch
-        write(100,'(a,l8)')  " scf_diis_switch      = ", scf_diis_switch
-        write(100,'(a,f12.8)') " damping_factor       = ", damping_factor
+        write(100,'(a,i16)') " no. of orbitals        = ", n
+        write(100,'(a,i16)') " no. of electrons       = ", n_el
+        write(100,'(a,l8)')  " scf_damping_switch     = ", scf_damping_switch
+        write(100,'(a,l8)')  " scf_diis_switch        = ", scf_diis_switch
+        write(100,'(a,f12.8)') " damping_factor         = ", damping_factor
+        write(100,'(a,f18.16)')" e_tolerance            = ", etol
+        write(100,'(a,i16)') " maximum scf-iterations = ", maxiter
+
         write(100, *) ""         
         
         ! allocating and initiating arrays
