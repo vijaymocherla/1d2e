@@ -1,7 +1,6 @@
 program main
     use, intrinsic :: iso_fortran_env, only:dp=>real64
     use two_electron_dvr
-    use lapack_wrappers, only:eigsh
     use imag_tprop
     use helpers, only: write_wfn
 
@@ -98,43 +97,26 @@ program main
     
 
     ! Allocating arrays
-    allocate(hamiltonian(ndim, ndim))
-    allocate(evals(ndim))
-    allocate(evecs(ndim, ndim))
     allocate(psi0(ndim))
     allocate(psi(ndim))
     
-    hamiltonian = 0.0d0
-    print*, "Generating Hamiltonian Matrix......"
-    print*, "" 
-    do i=1,ndim
-        hamiltonian(i,i) = te_sw_hamiltonian(i,i)
-        do j=i+1,ndim
-            hamiltonian(i,j) = te_sw_hamiltonian(i,j)
-            hamiltonian(j,i) = hamiltonian(i,j)
-        end do
-    end do
-   
-    print*, "Diagonalising the Hamiltonian......"
-    print*, "" 
-    ! diagonalising hamiltonian
-    call eigsh(hamiltonian, evals, evecs)
-    print*, "Completed Diagonalisation!"
-    print*,""
-    print*, "Saving all eigen-values to 'evals.txt'"
-    print*,""
-    open(100, file='evals.txt')
-    do i=1,ndim
-        write(100,*) evals(i)
-    end do
+    print*, "Using Imaginary time propagation (ITP) to get ground state......"
+    call gen_trial_state(psi0)   
+    call itp_on_the_fly(psi0, dt, print_nstep, etol, Ei, tstep)
+    comment = "! imag_tprop final wavefunction"
+    psi = cmplx(psi0, 0.0d0, kind=dp)
+    deallocate(psi0)
+    open(100, file='psi_itp.wfn')
+        call write_wfn(100, comment, psi)
     close(100)
-    print('(a,i4,a)'), "Saving first ",print_nevecs,"eigen-vectors to 'evecs.txt'"
-    print*,""
-    open(100, file='evecs.txt')
-    do i=1,ndim
-        write(100,*) evecs(i,1:print_nevecs)
-    end do
-    print*, "Ground state Energy: ", evals(1)
-    print*,""
-
+    print*, ""
+    print*, "Completed Imaginary time propagation (ITP)."
+    print*, ""
+    print*, "ITP Summary:"
+    print*, "------------"
+    print*, "dt      = ", dt
+    print*, "nstep   = ", tstep
+    print*, "E_conv  = ", etol
+    print*, "Ei      = ", Ei
+    print*, ""
 end program main
