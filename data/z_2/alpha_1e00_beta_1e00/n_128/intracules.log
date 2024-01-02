@@ -1,0 +1,1 @@
+/home/vijay/1d2e/build/tests/test_intracules -i psi_itp.wfn -x0 15.0 -o itp_wigner_intracule.wfn

@@ -1,0 +1,26 @@
+ 
+     Two-electron DVR    
+ ------------------------
+x0     =      15.00000000
+m      =       1.00000000
+Z      =       5.00000000
+n      =               32
+ndim   =             1024
+dx     =       0.96774194
+ 
+Soft-Coulomb Parameters:
+alpha  =       0.10000000
+beta   =       0.01000000
+ 
+ Generating Hamiltonian Matrix......
+ 
+ Diagonalising the Hamiltonian......
+ 
+ Completed Diagonalisation!
+ 
+ Saving all eigen-values to 'evals.txt'
+ 
+Saving first   20 eigen-vectors to 'evecs.txt'
+ 
+ Ground state Energy (in Eh) :   -13.6142369394682     
+ 

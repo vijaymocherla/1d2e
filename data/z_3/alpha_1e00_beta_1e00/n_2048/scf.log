@@ -1,0 +1,20 @@
+ 
+     Two-Electron DVR    
+ ------------------------
+x0     =      15.00000000
+m      =       1.00000000
+Z      =       3.00000000
+n      =             2048
+dx     =       0.01465559
+ 
+Soft-Coulomb Parameters:
+alpha  =       1.00000000
+beta   =       1.00000000
+ 
+ Generating Hamiltonian Matrix......
+ 
+ Running SCF........
+ Completed running SCF!!!
+  
+ Saving density to 'scf_density.txt'
+ Saving MO coefficients to 'scf_mo_coeff.txt'

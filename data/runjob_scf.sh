@@ -33,3 +33,4 @@ for a in ${alpha[@]};do
         cd ..
     done
 done
+
