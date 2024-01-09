@@ -13,7 +13,7 @@ echo "No. of threads being used: "$OMP_NUM_THREADS >> job.log
 
 # DVR grid parameters
 x0="15.0"
-ngrid=(256 512 1024)
+ngrid=(256) #(512 1024)
 
 # time steps for itp
 short_tstep=0.0001
@@ -27,10 +27,10 @@ for a in ${alpha[@]};do
         num_z=$(printf "%.8f\n" "$z")
         for n in ${ngrid[@]};do
             cd "n_"$n;
-            echo "Running Sparse-ITP calculations in alpha_"$a"_beta_"$b"/n_"$n >> ../../job.log
-            echo "Running Sparse-ITP" >> run.log
-            $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $short_tstep -etol $etol -print_nstep 1000 &> sparse_itp.log
-            echo $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $short_tstep -etol $etol -print_nstep 1000 &> sparse_itp.log
+            # echo "Running Sparse-ITP calculations in alpha_"$a"_beta_"$b"/n_"$n >> ../../job.log
+            # echo "Running Sparse-ITP" >> run.log
+            # $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $short_tstep -etol $etol -print_nstep 1000 &> sparse_itp.log
+            # echo $source/test_sparse_itp -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta -dt $short_tstep -etol $etol -print_nstep 1000 &> sparse_itp.log
 		                      
             echo "Computing the Wigner Intracule" >> run.log
             $source/test_intracules -i psi_itp.wfn -x0 $x0 -o itp_wigner_intracule.wfn &> intracules.log
