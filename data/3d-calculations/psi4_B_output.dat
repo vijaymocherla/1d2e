@@ -1,0 +1,358 @@
+
+Scratch directory: /home/sai/PSI_SCRATCH/
+   => Libint2 <=
+
+    Primary   basis highest AM E, G, H:  5, 4, 3
+    Auxiliary basis highest AM E, G, H:  6, 5, 4
+    Onebody   basis highest AM E, G, H:  6, 5, 4
+    Solid Harmonics ordering:            gaussian
+
+*** tstart() called on homepc
+*** at Mon Jan  8 11:52:42 2024
+
+   => Loading Basis Set <=
+
+    Name: AUG-CC-PVQZ
+    Role: ORBITAL
+    Keyword: BASIS
+    atoms 1 entry B          line   243 file /home/sai/miniconda3/envs/psi4/share/psi4/basis/aug-cc-pvqz.gbs 
+
+
+         ---------------------------------------------------------
+                                   SCF
+               by Justin Turney, Rob Parrish, Andy Simmonett
+                          and Daniel G. A. Smith
+                              RHF Reference
+                        4 Threads,  11444 MiB Core
+         ---------------------------------------------------------
+
+  ==> Geometry <==
+
+    Molecular point group: c1
+    Geometry (in Angstrom), charge = 3, multiplicity = 1:
+
+       Center              X                  Y                   Z               Mass       
+    ------------   -----------------  -----------------  -----------------  -----------------
+         B            0.000000000000     0.000000000000     0.000000000000    11.009305360000
+
+  Running in c1 symmetry.
+
+  Rotational constants: A = ************  B = ************  C = ************ [cm^-1]
+  Rotational constants: A = ************  B = ************  C = ************ [MHz]
+  Nuclear repulsion =    0.000000000000000
+
+  Charge       = 3
+  Multiplicity = 1
+  Electrons    = 2
+  Nalpha       = 1
+  Nbeta        = 1
+
+  ==> Algorithm <==
+
+  SCF Algorithm Type is PK.
+  DIIS enabled.
+  MOM disabled.
+  Fractional occupation disabled.
+  Guess Type is CORE.
+  Energy threshold   = 1.00e-12
+  Density threshold  = 1.00e-10
+  Integral threshold = 1.00e-12
+
+  ==> Primary Basis <==
+
+  Basis Set: AUG-CC-PVQZ
+    Blend: AUG-CC-PVQZ
+    Number of shells: 20
+    Number of basis functions: 80
+    Number of Cartesian functions: 105
+    Spherical Harmonics?: true
+    Max angular momentum: 4
+
+  ==> Integral Setup <==
+
+  Using in-core PK algorithm.
+   Calculation information:
+      Number of atoms:                   1
+      Number of AO shells:              20
+      Number of primitives:             38
+      Number of atomic orbitals:       105
+      Number of basis functions:        80
+
+      Integral cutoff                 1.00e-12
+      Number of threads:                 4
+
+  Performing in-core PK
+  Using 10500840 doubles for integral storage.
+  We computed 31837 shell quartets total.
+  Whereas there are 22155 unique shell quartets.
+    43.70 percent of shell quartets recomputed by reordering.
+
+  ==> DiskJK: Disk-Based J/K Matrices <==
+
+    J tasked:                  Yes
+    K tasked:                  Yes
+    wK tasked:                  No
+    Memory [MiB]:             8583
+    Schwarz Cutoff:          1E-12
+
+    OpenMP threads:              4
+
+  Minimum eigenvalue in the overlap matrix is 4.9376260876E-03.
+  Reciprocal condition number of the overlap matrix is 1.4564240526E-03.
+    Using symmetric orthogonalization.
+
+  ==> Pre-Iterations <==
+
+  SCF Guess: Core (One-Electron) Hamiltonian.
+
+   -------------------------------------------------------
+    Irrep   Nso     Nmo     Nalpha   Nbeta   Ndocc  Nsocc
+   -------------------------------------------------------
+     A         80      80       1       1       1       0
+   -------------------------------------------------------
+    Total      80      80       1       1       1       0
+   -------------------------------------------------------
+
+  ==> Iterations <==
+
+                        Total Energy        Delta E     RMS |[F,P]|
+
+   @RHF iter   1:   -21.87901324395260   -2.18790e+01   1.60285e-02 ADIIS/DIIS
+   @RHF iter   2:   -21.98592744534130   -1.06914e-01   6.14276e-04 ADIIS/DIIS
+   @RHF iter   3:   -21.98615819453585   -2.30749e-04   2.17429e-05 DIIS
+   @RHF iter   4:   -21.98615854195946   -3.47424e-07   1.36692e-07 DIIS
+   @RHF iter   5:   -21.98615854197406   -1.46052e-11   2.97240e-09 DIIS
+   @RHF iter   6:   -21.98615854197406    7.10543e-15   1.84021e-11 DIIS
+  Energy and wave function converged.
+
+
+  ==> Post-Iterations <==
+
+    Orbital Energies [Eh]
+    ---------------------
+
+    Doubly Occupied:                                                      
+
+       1A     -9.542098  
+
+    Virtual:                                                              
+
+       2A     -1.389632     3A     -1.166904     4A     -1.166904  
+       5A     -1.166904     6A     -0.571628     7A     -0.512423  
+       8A     -0.512423     9A     -0.512423    10A     -0.499226  
+      11A     -0.499226    12A     -0.499226    13A     -0.499226  
+      14A     -0.499226    15A     -0.307797    16A     -0.281886  
+      17A     -0.281886    18A     -0.281886    19A     -0.268583  
+      20A     -0.268583    21A     -0.268583    22A     -0.268583  
+      23A     -0.268583    24A     -0.228812    25A     -0.228812  
+      26A     -0.228812    27A     -0.228812    28A     -0.228812  
+      29A     -0.228812    30A     -0.228812    31A     -0.020868  
+      32A     -0.020868    33A     -0.020868    34A      0.252503  
+      35A      0.271691    36A      0.271691    37A      0.271691  
+      38A      0.271691    39A      0.271691    40A      0.410508  
+      41A      0.410508    42A      0.410508    43A      0.410508  
+      44A      0.410508    45A      0.410508    46A      0.410508  
+      47A      0.461734    48A      0.461734    49A      0.461734  
+      50A      0.461734    51A      0.461734    52A      0.461734  
+      53A      0.461734    54A      0.461734    55A      0.461734  
+      56A      2.192588    57A      2.192588    58A      2.192588  
+      59A      2.471072    60A      2.471072    61A      2.471072  
+      62A      2.471072    63A      2.471072    64A      2.637244  
+      65A      2.637244    66A      2.637244    67A      2.637244  
+      68A      2.637244    69A      2.637244    70A      2.637244  
+      71A      2.637244    72A      2.637244    73A      2.676106  
+      74A      2.676106    75A      2.676106    76A      2.676106  
+      77A      2.676106    78A      2.676106    79A      2.676106  
+      80A     11.298622  
+
+    Final Occupation by Irrep:
+              A 
+    DOCC [     1 ]
+    NA   [     1 ]
+    NB   [     1 ]
+
+  @RHF Final Energy:   -21.98615854197406
+
+   => Energetics <=
+
+    Nuclear Repulsion Energy =              0.0000000000000000
+    One-Electron Energy =                 -24.8881202596873194
+    Two-Electron Energy =                   2.9019617177132648
+    Total Energy =                        -21.9861585419740564
+
+Computation Completed
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the SCF density matrix
+
+
+ Multipole Moments:
+
+ ------------------------------------------------------------------------------------
+     Multipole            Electronic (a.u.)      Nuclear  (a.u.)        Total (a.u.)
+ ------------------------------------------------------------------------------------
+
+ L = 1.  Multiply by 2.5417464519 to convert [e a0] to [Debye]
+ Dipole X            :         -0.0000000            0.0000000           -0.0000000
+ Dipole Y            :          0.0000000            0.0000000            0.0000000
+ Dipole Z            :         -0.0000000            0.0000000           -0.0000000
+ Magnitude           :                                                    0.0000000
+
+ ------------------------------------------------------------------------------------
+
+*** tstop() called on homepc at Mon Jan  8 11:52:42 2024
+Module time:
+	user time   =       2.43 seconds =       0.04 minutes
+	system time =       0.18 seconds =       0.00 minutes
+	total time  =          0 seconds =       0.00 minutes
+Total time:
+	user time   =      45.11 seconds =       0.75 minutes
+	system time =       5.09 seconds =       0.08 minutes
+	total time  =         15 seconds =       0.25 minutes
+ MINTS: Wrapper to libmints.
+   by Justin Turney
+
+   Calculation information:
+      Number of threads:                 4
+      Number of atoms:                   1
+      Number of AO shells:              20
+      Number of SO shells:              20
+      Number of primitives:             38
+      Number of atomic orbitals:       105
+      Number of basis functions:        80
+
+      Number of irreps:                  1
+      Integral cutoff                 1.00e-12
+      Number of functions per irrep: [  80 ]
+
+ OEINTS: Overlap, kinetic, potential, dipole, and quadrupole integrals
+         stored in file 35.
+
+      Computing two-electron integrals...done
+      Computed 497710 non-zero two-electron integrals.
+        Stored in file 33.
+
+
+         ---------------------------------------------------------
+                          Configuration Interaction
+                            (a 'D E T C I' module)
+
+                 C. David Sherrill, Daniel G. A. Smith, and
+                              Matt L. Leininger
+         ---------------------------------------------------------
+
+
+   ==> Parameters <==
+
+    EX LEVEL       =        2      H0 BLOCKSIZE  =     1000
+    VAL EX LEVEL   =        0      H0 GUESS SIZE =     1000
+    H0COUPLINGSIZE =        0      H0 COUPLING   =       NO
+    MAXITER        =       24      NUM PRINT     =       20
+    NUM ROOTS      =        1      ICORE         =        1
+    PRINT LVL      =        1      FCI           =      YES
+    R CONV         = 1.00e-04      MIXED         =      YES
+    E CONV         = 1.00e-12      MIXED4        =      YES
+    R4S            =       NO      REPL OTF      =       NO
+    DIAG METHOD    =      SEM      FOLLOW ROOT   =        0
+    PRECONDITIONER = DAVIDSON      UPDATE        = DAVIDSON
+    S              =   0.0000      Ms0           =      YES
+    GUESS VECTOR   =  H0BLOCK      OPENTYPE      =     NONE
+    COLLAPSE SIZE  =        1      HD AVG        = EVANGELISTI
+    MAX NUM VECS   =       25      REF SYM       =     AUTO
+    IOPEN        =       NO
+
+    EX ALLOW       =  1  1 
+    STATE AVERAGE  =  0(1.00) 
+
+   ==> CI Orbital and Space information <==
+
+   ------------------------------------
+               Space    Total     A
+   ------------------------------------
+                 Nso       80    80
+                 Nmo       80    80
+               Ndocc        1     1
+               Nsocc        0     0
+   ------------------------------------
+              CI Spaces
+   ------------------------------------
+        Dropped DOCC        0     0
+              Active       80    80
+        Dropped UOCC        0     0
+   ------------------------------------
+
+   ==> Setting up CI strings <==
+
+    There are 80 alpha and 80 beta strings
+    The CI space requires 6400 (6.40E+03) determinants and 1 blocks
+
+   ==> Transforming CI integrals <==
+
+	Presorting SO-basis two-electron integrals.
+	Sorting File: SO Ints (nn|nn) nbuckets = 1
+	Constructing frozen core operators
+	Starting first half-transformation.
+	Sorting half-transformed integrals.
+	First half integral transformation complete.
+	Starting second half-transformation.
+	Two-electron integral transformation complete.
+
+   ==> Starting CI iterations <==
+
+    H0 Block Eigenvalue = -21.98727547
+
+    Simultaneous Expansion Method (Block Davidson Method)
+    Using 1 initial trial vectors
+
+     Iter   Root       Total Energy       Delta E      C RMS
+
+   @CI  0:     0    -21.987275474270   -2.1987E+01   7.3666E-01  
+   @CI  1:     0    -22.005451488554   -1.8176E-02   2.1262E-02  
+   @CI  2:     0    -22.005475547468   -2.4059E-05   2.2121E-03  
+   @CI  3:     0    -22.005475832136   -2.8467E-07   1.6837E-04  
+   @CI  4:     0    -22.005475833377   -1.2413E-09   1.0780E-05  
+   @CI  5:     0    -22.005475833383   -5.3255E-12   7.4753E-07  
+    Warning: Norm of correction (root 0) is < 1.0E-13
+   @CI  6:     0    -22.005475833383   -2.8422E-14   5.2878E-08 c
+
+   ==> Energetics <==
+
+    SCF energy =          -21.986158541974056
+    Total CI energy =     -22.005475833382782
+
+   ==> FCI root 0 information <==
+
+    FCI Root 0 energy =   -22.005475833382782
+
+   The 20 most important determinants:
+
+    *   1    0.999634  (    0,    0)  1AX 
+    *   2   -0.014419  (   79,   79)  80AX 
+    *   3   -0.006687  (   56,   56)  57AX 
+    *   4   -0.006687  (   57,   57)  58AX 
+    *   5   -0.006687  (   55,   55)  56AX 
+    *   6    0.006047  (    1,   79)  2AA 80AB 
+    *   7    0.006047  (   79,    1)  2AB 80AA 
+    *   8    0.005644  (   33,   79)  34AA 80AB 
+    *   9    0.005644  (   79,   33)  34AB 80AA 
+    *  10   -0.003788  (    1,    1)  2AX 
+    *  11   -0.003332  (    1,   33)  2AA 34AB 
+    *  12   -0.003332  (   33,    1)  2AB 34AA 
+    *  13   -0.003115  (    4,   55)  5AA 56AB 
+    *  14   -0.003115  (   55,    4)  5AB 56AA 
+    *  15    0.002992  (    5,   79)  6AA 80AB 
+    *  16    0.002992  (   79,    5)  6AB 80AA 
+    *  17   -0.002958  (   33,   33)  34AX 
+    *  18   -0.002954  (    2,   57)  3AA 58AB 
+    *  19   -0.002954  (   57,    2)  3AB 58AA 
+    *  20    0.002748  (    3,   56)  4AA 57AB 
+
+		 "A good bug is a dead bug" 
+
+			 - Starship Troopers
+
+		 "I didn't write FORTRAN.  That's the problem."
+
+			 - Edward Valeev
