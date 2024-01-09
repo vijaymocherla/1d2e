@@ -4,9 +4,13 @@
 
 build/*
 
+job.log
+run.log
+intracules.log
+
 data/1datoms/*
-
-
+scf_mo_coeff.txt
+scf_density.txt
 # Jupyter Notebook
 .ipynb_checkpoints
 
