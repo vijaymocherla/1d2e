@@ -28,7 +28,6 @@ for a in ${alpha[@]};do
             # echo "Running Hartree-Fock" >> run.log
             # echo $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta >> run.log
             # $source/test_hartreefock -n $n -x0 $x0 -z $num_z -alpha $num_alpha -beta $num_beta &> scf.log
-            rm scf_density.txt
             cd ..
         done
         cd ..
